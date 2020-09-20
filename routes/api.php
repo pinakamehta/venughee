@@ -20,3 +20,6 @@ Route::post('register', 'API\AuthController@register');
 Route::resource('items', 'API\ItemsController');
 Route::resource('purchases', 'API\PurchasesController');
 Route::resource('sales', 'API\SalesController');
+
+Route::post('invoice/next-id', 'API\InvoicesController@getNextInvoiceId');
+Route::get('invoice/validate-id/{invoice_id}', 'API\InvoicesController@validateInvoiceId');
