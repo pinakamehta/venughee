@@ -7,7 +7,6 @@ use App\Http\Requests\API\ItemRequest;
 use App\Repositories\API\ItemRepository;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -54,9 +53,20 @@ class ItemsController extends Controller
             $this->item_repository->addItem($request->all());
             DB::commit();
             return prepare_response(200, true, 'Item has been added successfully');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Exception in Add Item', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
+
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $this->item_repository->deleteItem($id);
+
+            return prepare_response(200, true, 'Item has been deleted');
+        } catch (Exception $e) {
+            Log::error('Exception in Delete Item', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }
