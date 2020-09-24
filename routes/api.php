@@ -23,3 +23,5 @@ Route::resource('sales', 'API\SalesController');
 
 Route::post('invoice/next-id', 'API\InvoicesController@getNextInvoiceId');
 Route::get('invoice/validate-id/{invoice_id}', 'API\InvoicesController@validateInvoiceId');
+
+Route::resource('customers', 'API\CustomersController');
