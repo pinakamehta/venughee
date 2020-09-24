@@ -17,6 +17,7 @@ class CustomerRepository
     public function getCustomers()
     {
         $customers = $this->customer->get([
+            'id',
             'company_name',
             'first_name',
             'last_name',
