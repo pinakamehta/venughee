@@ -16,6 +16,7 @@ class CreateTableInvoices extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->string('invoice_number', 10);
+            $table->string('custom_invoice_number', 10)->nullable();
             $table->string('invoice_type');
             $table->text('items')->nullable();
             $table->double('tax_amount')->default(0);
