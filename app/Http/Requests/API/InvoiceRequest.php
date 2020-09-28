@@ -25,9 +25,22 @@ class InvoiceRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'type' => 'required|in:sales,purchase'
-        ];
+        $rules = [];
+
+        switch ($this->route()->getActionMethod()) {
+            case 'getNextInvoiceId':
+                $rules = [
+                    'type' => 'required|in:sales,purchase'
+                ];
+                break;
+            case 'update':
+                $rules = [
+                    'invoice_number' => 'required',
+                    'invoice_date'   => 'required',
+                ];
+        }
+        return $rules;
+
     }
 
     protected function failedValidation(Validator $validator)

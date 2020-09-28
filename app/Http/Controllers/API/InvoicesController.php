@@ -5,12 +5,14 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\InvoiceRequest;
 use App\Repositories\API\InvoiceRepository;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class InvoicesController extends Controller
 {
     private $invoice_repository;
+
     public function __construct()
     {
         $this->invoice_repository = new InvoiceRepository();
@@ -24,7 +26,7 @@ class InvoicesController extends Controller
             DB::commit();
 
             return prepare_response(200, true, 'Here is your next invoice number', $response);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             Log::error('Exception in getNextInvoiceId', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
             return prepare_response(500, false, 'Sorry Something was wrong.!');
@@ -42,8 +44,58 @@ class InvoicesController extends Controller
 
             return prepare_response(200, true, 'This invoice number you can use');
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Exception in validateInvoiceId', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
+            return prepare_response(500, false, 'Sorry Something was wrong.!');
+        }
+    }
+
+    public function index(InvoiceRequest $request)
+    {
+        try {
+            $invoices = $this->invoice_repository->getInvoices($request->all());
+
+            return prepare_response(200, true, 'Invoice list have been retrieve', $invoices);
+        } catch (Exception $e) {
+            Log::error('Exception in invoice list', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
+            return prepare_response(500, false, 'Sorry Something was wrong.!');
+        }
+    }
+
+    public function show($id)
+    {
+        try {
+            $invoice = $this->invoice_repository->getInvoiceData($id);
+
+            if (empty($invoice)) {
+                return prepare_response(200, false, 'Invoice number is invalid try again');
+            }
+
+            return prepare_response(200, true, 'Invoice details have been retrieve', $invoice);
+        } catch (Exception $e) {
+            Log::error('Exception in invoice list', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
+            return prepare_response(500, false, 'Sorry Something was wrong.!');
+        }
+    }
+
+    public function update(InvoiceRequest $request, $id)
+    {
+        try {
+            $this->invoice_repository->editInvoice($request->all(), $id);
+            return prepare_response(200, true, 'Invoice successfully saved');
+        } catch (Exception $e) {
+            Log::error('Exception in update invoice', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
+            return prepare_response(500, false, 'Sorry Something was wrong.!');
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $this->invoice_repository->deleteInvoice($id);
+            return prepare_response(200, true, 'Invoice successfully deleted');
+        } catch (Exception $e) {
+            Log::error('Exception in delete invoice', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }

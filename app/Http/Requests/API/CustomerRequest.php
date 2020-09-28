@@ -29,7 +29,6 @@ class CustomerRequest extends FormRequest
 
         switch ($this->route()->getActionMethod()) {
             case 'store':
-
                 $rules = [
                     'company_name' => 'required',
                     'first_name'   => 'required',

@@ -18,10 +18,12 @@ class CreateTableInvoices extends Migration
             $table->string('invoice_number', 10);
             $table->string('custom_invoice_number', 10)->nullable();
             $table->string('invoice_type');
+            $table->date('invoice_date')->nullable();
             $table->text('items')->nullable();
             $table->double('tax_amount')->default(0);
             $table->double('sub_total')->default(0);
             $table->double('grand_total')->default(0);
+            $table->string('terms_condition')->nullable();
             $table->timestamps();
         });
     }
