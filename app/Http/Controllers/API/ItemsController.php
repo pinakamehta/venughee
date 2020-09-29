@@ -50,9 +50,9 @@ class ItemsController extends Controller
     {
         DB::beginTransaction();
         try {
-            $this->item_repository->addItem($request->all());
+            $item = $this->item_repository->addItem($request->all());
             DB::commit();
-            return prepare_response(200, true, 'Item has been added successfully');
+            return prepare_response(200, true, 'Item has been added successfully', $item);
         } catch (Exception $e) {
             DB::rollBack();
 

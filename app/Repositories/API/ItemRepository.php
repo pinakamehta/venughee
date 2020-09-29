@@ -41,7 +41,7 @@ class ItemRepository
 
     public function addItem($data)
     {
-        Item::create([
+        return Item::create([
             'item_name'            => $data['item_name'],
             'unit'                 => checkEmpty($data, 'unit', 0),
             'sales_price'          => checkEmpty($data, 'sales_price', 0),
