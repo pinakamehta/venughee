@@ -15,6 +15,8 @@ class CreateTableInvoices extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
+            $table->integer('customer_id')->default(0);
+            $table->integer('branch_id')->default(0);
             $table->string('invoice_number', 10);
             $table->string('custom_invoice_number', 10)->nullable();
             $table->string('invoice_type');

@@ -37,6 +37,8 @@ class InvoiceRequest extends FormRequest
                 $rules = [
                     'invoice_number' => 'required',
                     'invoice_date'   => 'required',
+                    'consumer_id'    => 'required',
+                    'invoice_for'    => 'required|in:customer,branch'
                 ];
         }
         return $rules;

@@ -114,6 +114,12 @@ class InvoiceRepository
             $invoice->terms_condition = $data['terms_condition'];
         }
 
+        if ($data['invoice_for'] == 'customer') {
+            $invoice->customer_id = $data['consumer_id'];
+        } else {
+            $invoice->branch_id = $data['consumer_id'];
+        }
+
         $invoice->invoice_date = $data['invoice_date'];
         $invoice->tax_amount   = checkEmpty($data, 'tax_amount', 0);
         $invoice->sub_total    = checkEmpty($data, 'sub_total', 0);
@@ -121,9 +127,9 @@ class InvoiceRepository
         $invoice->save();
     }
 
-    public function getInvoiceData ($invoice_number)
+    public function getInvoiceData($invoice_number)
     {
-        $invoice = $this->invoice->where('id', $invoice_number)->first();
+        $invoice = $this->invoice->with(['customer'])->where('id', $invoice_number)->first();
 
         if (empty($invoice)) {
             return [];
@@ -139,6 +145,20 @@ class InvoiceRepository
             'sub_total'       => $invoice->sub_total,
             'grand_total'     => $invoice->grand_total,
             'terms_condition' => checkEmpty($invoice, 'terms_condition', ''),
+            'customer'        => [
+                'id'            => !empty($invoice->customer) ? $invoice->customer->id : '',
+                'company_name'  => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'company_name', '') : '',
+                'customer_name' => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'customer_name', '') : '',
+                'phone'         => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'phone', '') : '',
+                'email'         => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'email', '') : '',
+                'gst_treatment' => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'gst_treatment', '') : '',
+                'gst_number'    => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'gst_number', '') : '',
+                'address'       => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'address', '') : '',
+                'city'          => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'city', '') : '',
+                'state'         => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'state', '') : '',
+                'country'       => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'country', '') : '',
+                'pin_code'      => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'pin_code', '') : '',
+            ]
         ];
     }
 
