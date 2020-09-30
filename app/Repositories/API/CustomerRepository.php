@@ -19,8 +19,7 @@ class CustomerRepository
         $customers = $this->customer->get([
             'id',
             'company_name',
-            'first_name',
-            'last_name',
+            'customer_name',
             'phone',
             'address',
             'city',
@@ -28,6 +27,7 @@ class CustomerRepository
             'country',
             'pin_code',
             'gst_number',
+            'gst_treatment',
             'email'
         ]);
 
@@ -39,18 +39,18 @@ class CustomerRepository
 
         foreach ($customers as $customer) {
             $customer_data[] = [
-                'id'           => $customer->id,
-                'company_name' => checkEmpty($customer, 'company_name', ''),
-                'first_name'   => checkEmpty($customer, 'first_name', ''),
-                'last_name'    => checkEmpty($customer, 'last_name', ''),
-                'phone'        => checkEmpty($customer, 'phone', ''),
-                'address'      => checkEmpty($customer, 'address', ''),
-                'city'         => checkEmpty($customer, 'city', ''),
-                'state'        => checkEmpty($customer, 'state', ''),
-                'country'      => checkEmpty($customer, 'country', ''),
-                'pin_code'     => checkEmpty($customer, 'pin_code', ''),
-                'gst_number'   => checkEmpty($customer, 'gst_number', ''),
-                'email'        => checkEmpty($customer, 'email', '')
+                'id'            => $customer->id,
+                'company_name'  => checkEmpty($customer, 'company_name', ''),
+                'customer_name' => checkEmpty($customer, 'customer_name', ''),
+                'phone'         => checkEmpty($customer, 'phone', ''),
+                'address'       => checkEmpty($customer, 'address', ''),
+                'city'          => checkEmpty($customer, 'city', ''),
+                'state'         => checkEmpty($customer, 'state', ''),
+                'country'       => checkEmpty($customer, 'country', ''),
+                'pin_code'      => checkEmpty($customer, 'pin_code', ''),
+                'gst_number'    => checkEmpty($customer, 'gst_number', ''),
+                'gst_treatment' => checkEmpty($customer, 'gst_treatment', ''),
+                'email'         => checkEmpty($customer, 'email', '')
             ];
         }
 
@@ -60,24 +60,23 @@ class CustomerRepository
     public function createCustomer($data)
     {
         $customer = $this->customer->create([
-            'company_name' => $data['company_name'],
-            'first_name'   => $data['first_name'],
-            'last_name'    => $data['last_name'],
-            'phone'        => $data['phone'],
-            'address'      => $data['address'],
-            'city'         => $data['city'],
-            'state'        => $data['state'],
-            'country'      => $data['country'],
-            'pin_code'     => $data['pin_code'],
-            'gst_number'   => $data['gst_number'],
-            'email'        => $data['email']
+            'company_name'  => $data['company_name'],
+            'customer_name' => $data['customer_name'],
+            'phone'         => $data['phone'],
+            'address'       => $data['address'],
+            'city'          => $data['city'],
+            'state'         => $data['state'],
+            'country'       => $data['country'],
+            'pin_code'      => $data['pin_code'],
+            'gst_number'    => $data['gst_number'],
+            'gst_treatment' => $data['gst_treatment'],
+            'email'         => $data['email']
         ]);
 
         return [
-            'id'           => $customer->id,
-            'company_name' => $customer->company_name,
-            'first_name'   => $customer->first_name,
-            'last_name'    => $customer->last_name
+            'id'            => $customer->id,
+            'company_name'  => $customer->company_name,
+            'customer_name' => $customer->customer_name,
         ];
     }
 }
