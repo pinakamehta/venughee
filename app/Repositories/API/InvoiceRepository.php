@@ -65,13 +65,23 @@ class InvoiceRepository
 
     public function getInvoices($data)
     {
-        $invoices = $this->invoice;
+        $page         = checkEmpty($data, 'page', 1);
+        $limit        = checkEmpty($data, 'limit', 25);
+        $invoice_type = checkEmpty($data, 'invoice_type', 'sales');
+
+        $offset = ($page - 1) * $limit;
+
+        $invoices = $this->invoice->with(['customer'])->where('invoice_type', $invoice_type)->where(function ($query) {
+            $query->where('customer_id', '>', 0)->orWhere('branch_id', '>', 0);
+        });
 
         if (!empty($data['invoice_date'])) {
             $invoices = $invoices->where('invoice_date', $data['invoice_date']);
         }
 
         $invoices = $invoices->orderBy('id', 'DESC')
+            ->limit($limit)
+            ->offset($offset)
             ->get();
 
         $invoice_data = [];
@@ -88,6 +98,11 @@ class InvoiceRepository
                     'sub_total'       => $invoice->sub_total,
                     'grand_total'     => $invoice->grand_total,
                     'terms_condition' => checkEmpty($invoice, 'terms_condition', ''),
+                    'customer'        => [
+                        'customer_id'   => !empty($invoice->customer) ? $invoice->customer->id : 0,
+                        'company_name'  => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'company_name', '') : '',
+                        'customer_name' => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'customer_name', '') : '',
+                    ]
                 ];
             }
         }

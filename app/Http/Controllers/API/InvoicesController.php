@@ -55,6 +55,10 @@ class InvoicesController extends Controller
         try {
             $invoices = $this->invoice_repository->getInvoices($request->all());
 
+            if (empty($invoices)) {
+                return prepare_response(200, false, 'There is no invoice available right now');
+            }
+
             return prepare_response(200, true, 'Invoice list have been retrieve', $invoices);
         } catch (Exception $e) {
             Log::error('Exception in invoice list', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
