@@ -65,7 +65,6 @@ class InvoicesController extends Controller
             return prepare_response(200, true, 'Invoice list have been retrieve', $invoices);
         } catch (Exception $e) {
             report($e);
-            Log::channel('slack')->critical($request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }

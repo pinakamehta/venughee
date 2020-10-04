@@ -38,19 +38,21 @@ class Handler extends ExceptionHandler
      *
      * @throws Exception
      */
-    public function report(Throwable $exception, $extra_data = [])
+    public function report(Throwable $exception)
     {
-        $context = [
-            'environment' => app()->environment(),
-            'file'        => $exception->getFile(),
-            'line'        => $exception->getLine(),
-            'code'        => $exception->getCode(),
-        ];
-        if (!empty($extra_data)) {
-            $context = array_merge($context, $extra_data);
+        if (app()->environment() == 'local') {
+            parent::report($exception);
+        } else {
+            $context = [
+                'environment' => app()->environment(),
+                'file'        => $exception->getFile(),
+                'line'        => $exception->getLine(),
+                'code'        => $exception->getCode(),
+            ];
+
+            Log::critical($exception->getMessage(), $context);
+            Log::channel('slack')->critical("Request Data", [\request()->all()]);
         }
-        Log::critical($exception->getMessage(), $context);
-        parent::report($exception);
     }
 
     /**
