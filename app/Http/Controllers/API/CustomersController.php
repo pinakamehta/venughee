@@ -25,7 +25,8 @@ class CustomersController extends Controller
 
             return prepare_response(200, true, 'Customers have been retrieve successfully', $customers);
         } catch (\Exception $e) {
-            Log::error('Exception in Customer list', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
+            report($e);
+            Log::channel('slack')->critical($request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }
@@ -39,7 +40,8 @@ class CustomersController extends Controller
             return prepare_response(200, true, 'Customer has been created', $customer);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Exception in Customer list', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
+            report($e);
+            Log::channel('slack')->critical($request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }

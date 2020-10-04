@@ -28,7 +28,8 @@ class InvoicesController extends Controller
             return prepare_response(200, true, 'Here is your next invoice number', $response);
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Exception in getNextInvoiceId', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
+            report($e);
+            Log::channel('slack')->critical($request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }
@@ -45,7 +46,8 @@ class InvoicesController extends Controller
             return prepare_response(200, true, 'This invoice number you can use');
 
         } catch (Exception $e) {
-            Log::error('Exception in validateInvoiceId', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
+            report($e);
+            Log::channel('slack')->critical($request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }
@@ -53,6 +55,7 @@ class InvoicesController extends Controller
     public function index(InvoiceRequest $request)
     {
         try {
+            $temp=4/0;
             $invoices = $this->invoice_repository->getInvoices($request->all());
 
             if (empty($invoices)) {
@@ -61,7 +64,8 @@ class InvoicesController extends Controller
 
             return prepare_response(200, true, 'Invoice list have been retrieve', $invoices);
         } catch (Exception $e) {
-            Log::error('Exception in invoice list', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
+            report($e);
+            Log::channel('slack')->critical($request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }
@@ -77,7 +81,8 @@ class InvoicesController extends Controller
 
             return prepare_response(200, true, 'Invoice details have been retrieve', $invoice);
         } catch (Exception $e) {
-            Log::error('Exception in invoice list', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
+            report($e);
+            Log::channel('slack')->critical($request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }
@@ -88,7 +93,8 @@ class InvoicesController extends Controller
             $this->invoice_repository->editInvoice($request->all(), $id);
             return prepare_response(200, true, 'Invoice successfully saved');
         } catch (Exception $e) {
-            Log::error('Exception in update invoice', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
+            report($e);
+            Log::channel('slack')->critical($request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }
@@ -99,7 +105,8 @@ class InvoicesController extends Controller
             $this->invoice_repository->deleteInvoice($id);
             return prepare_response(200, true, 'Invoice successfully deleted');
         } catch (Exception $e) {
-            Log::error('Exception in delete invoice', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
+            report($e);
+            Log::channel('slack')->critical($request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }

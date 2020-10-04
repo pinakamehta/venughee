@@ -53,7 +53,8 @@ class AuthController extends Controller
 
             return prepare_response(200, true, 'Login successfully', $login_data);
         } catch (Exception $e) {
-            Log::error('Exception in Login', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
+            report($e);
+            Log::channel('slack')->critical($request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }
@@ -99,7 +100,8 @@ class AuthController extends Controller
             return prepare_response(200, true, 'You have been successfully registered with us', $customer_data);
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Exception in register', [$e->getMessage() . " " . $e->getFile() . " " . $e->getLine()]);
+            report($e);
+            Log::channel('slack')->critical($request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }
