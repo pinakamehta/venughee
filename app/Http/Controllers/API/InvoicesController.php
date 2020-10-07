@@ -55,7 +55,6 @@ class InvoicesController extends Controller
     public function index(InvoiceRequest $request)
     {
         try {
-            $temp=4/0;
             $invoices = $this->invoice_repository->getInvoices($request->all());
 
             if (empty($invoices)) {
