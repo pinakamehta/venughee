@@ -21,7 +21,9 @@ class CreateTableItems extends Migration
             $table->string('sales_description')->nullable();
             $table->double('purchase_price')->default(0);
             $table->string('purchase_description')->nullable();
+            $table->float('gst')->default(0);
             $table->tinyInteger('is_active')->default(1);
+            $table->integer('added_by')->default(0);
             $table->timestamps();
         });
     }

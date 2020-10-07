@@ -41,7 +41,8 @@ class InvoiceRepository
 
         $next_invoice = $this->invoice->create([
             'invoice_number' => $next_invoice_number,
-            'invoice_type'   => $data['type']
+            'invoice_type'   => $data['type'],
+            'added_by'       => $data['user_id']
         ]);
 
         return [
@@ -88,11 +89,10 @@ class InvoiceRepository
 
         if (!empty($invoices)) {
             foreach ($invoices as $invoice) {
-                $invoice_data[] = [
+                $invoice_data[ $invoice->invoice_date ][] = [
                     'id'              => $invoice->id,
                     'invoice_number'  => !empty($invoice->custom_invoice_number) ? $invoice->custom_invoice_number : $invoice->invoice_number,
                     'invoice_type'    => $invoice->invoice_type,
-                    'invoice_date'    => $invoice->invoice_date,
                     'items'           => checkEmpty($invoice, 'items', ''),
                     'tax_amount'      => $invoice->tax_amount,
                     'sub_total'       => $invoice->sub_total,
@@ -106,7 +106,20 @@ class InvoiceRepository
                 ];
             }
         }
-        return $invoice_data;
+
+        $prepare_invoice_data = [];
+
+        if (!empty($invoice_data)) {
+            foreach ($invoice_data as $invoice_date => $invoice) {
+                $prepare_invoice_data[] = [
+                    'invoice_date' => $invoice_date,
+                    'count'        => count($invoice_data[ $invoice_date ]),
+                    'invoice_data' => $invoice_data[ $invoice_date ]
+                ];
+            }
+        }
+
+        return $prepare_invoice_data;
     }
 
     public function editInvoice($data, $invoice_id)

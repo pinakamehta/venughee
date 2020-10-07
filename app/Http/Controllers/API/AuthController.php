@@ -25,11 +25,11 @@ class AuthController extends Controller
                 ->first();
 
             if (empty($login_user)) {
-                $login_user = Customer::where('phone', $data['phone'])
-                    ->where('is_active', 1)
-                    ->first();
+//                $login_user = Customer::where('phone', $data['phone'])
+//                    ->where('is_active', 1)
+//                    ->first();
 
-                $user_type = 'customer';
+                $user_type = 'branch';
             }
 
             if (empty($login_user) || !Hash::check($data['password'], $login_user->password)) {
@@ -38,11 +38,15 @@ class AuthController extends Controller
 
             $login_token_data = $this->generateTokenWithExpiration();
 
-            $login_user->token        = $login_token_data['token'];
-            $login_user->token_expiry = $login_token_data['expiry'];
-            $login_user->save;
+            if ($user_type == 'admin') {
+                Admin::where('id', $login_user->id)->update([
+                    'token'        => $login_token_data['token'],
+                    'token_expiry' => $login_token_data['expiry']
+                ]);
+            }
 
             $login_data = [
+                'id'         => $login_user->id,
                 'first_name' => checkEmpty($login_user, 'first_name', ''),
                 'last_name'  => checkEmpty($login_user, 'last_name', ''),
                 'phone'      => checkEmpty($login_user, 'phone', ''),

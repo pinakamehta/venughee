@@ -47,7 +47,6 @@ class InvoicesController extends Controller
 
         } catch (Exception $e) {
             report($e);
-            Log::channel('slack')->critical($request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }
@@ -80,7 +79,6 @@ class InvoicesController extends Controller
             return prepare_response(200, true, 'Invoice details have been retrieve', $invoice);
         } catch (Exception $e) {
             report($e);
-            Log::channel('slack')->critical($request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }

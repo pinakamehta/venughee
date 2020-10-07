@@ -26,6 +26,7 @@ class CreateCustomersTable extends Migration
             $table->string('state', 50)->nullable();
             $table->string('country', 50)->nullable();
             $table->string('pin_code', 7)->nullable();
+            $table->integer('added_by')->default(0);
             $table->timestamps();
         });
     }

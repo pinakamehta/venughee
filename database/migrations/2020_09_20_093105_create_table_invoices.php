@@ -26,6 +26,7 @@ class CreateTableInvoices extends Migration
             $table->double('sub_total')->default(0);
             $table->double('grand_total')->default(0);
             $table->string('terms_condition')->nullable();
+            $table->integer('added_by')->default(0);
             $table->timestamps();
         });
     }

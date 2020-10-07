@@ -17,10 +17,13 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', 'API\AuthController@login');
 Route::post('register', 'API\AuthController@register');
 
-Route::resource('items', 'API\ItemsController');
-Route::resource('invoices', 'API\InvoicesController');
+Route::group(['middleware' => 'login.check'], function () {
+    Route::resource('items', 'API\ItemsController');
+    Route::resource('invoices', 'API\InvoicesController');
 
-Route::post('invoice/next-id', 'API\InvoicesController@getNextInvoiceId');
-Route::get('invoice/validate-id/{invoice_id}', 'API\InvoicesController@validateInvoiceId');
+    Route::post('invoice/next-id', 'API\InvoicesController@getNextInvoiceId');
+    Route::get('invoice/validate-id/{invoice_id}', 'API\InvoicesController@validateInvoiceId');
 
-Route::resource('customers', 'API\CustomersController');
+    Route::resource('customers', 'API\CustomersController');
+
+});
