@@ -21,7 +21,7 @@ class CustomersController extends Controller
     public function index(CustomerRequest $request)
     {
         try {
-            $customers = $this->customer_repository->getCustomers();
+            $customers = $this->customer_repository->getCustomers($request->all());
 
             return prepare_response(200, true, 'Customers have been retrieve successfully', $customers);
         } catch (\Exception $e) {

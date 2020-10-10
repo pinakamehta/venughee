@@ -14,22 +14,24 @@ class CustomerRepository
         $this->customer = new Customer();
     }
 
-    public function getCustomers()
+    public function getCustomers($data)
     {
-        $customers = $this->customer->get([
-            'id',
-            'company_name',
-            'customer_name',
-            'phone',
-            'address',
-            'city',
-            'state',
-            'country',
-            'pin_code',
-            'gst_number',
-            'gst_treatment',
-            'email'
-        ]);
+        $customers = $this->customer
+            ->where('added_by', $data['user_id'])
+            ->get([
+                'id',
+                'company_name',
+                'customer_name',
+                'phone',
+                'address',
+                'city',
+                'state',
+                'country',
+                'pin_code',
+                'gst_number',
+                'gst_treatment',
+                'email'
+            ]);
 
         if (empty($customers)) {
             throw new Exception('There is no customer available try to add new customer');
@@ -70,7 +72,8 @@ class CustomerRepository
             'pin_code'      => $data['pin_code'],
             'gst_number'    => $data['gst_number'],
             'gst_treatment' => $data['gst_treatment'],
-            'email'         => $data['email']
+            'email'         => $data['email'],
+            'added_by'      => $data['user_id']
         ]);
 
         return [

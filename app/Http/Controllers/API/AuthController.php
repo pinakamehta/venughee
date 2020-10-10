@@ -4,8 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\AuthRequest;
-use App\Models\Admin;
+use App\Models\Branch;
 use App\Models\Customer;
+use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -20,39 +21,42 @@ class AuthController extends Controller
 
             $user_type = 'admin';
 
-            $login_user = Admin::where('phone', $data['phone'])
+            $login_user = User::where('phone', $data['phone'])
                 ->where('is_active', 1)
                 ->first();
-
-            if (empty($login_user)) {
-//                $login_user = Customer::where('phone', $data['phone'])
-//                    ->where('is_active', 1)
-//                    ->first();
-
-                $user_type = 'branch';
-            }
 
             if (empty($login_user) || !Hash::check($data['password'], $login_user->password)) {
                 return prepare_response(200, false, 'Please enter correct login details');
             }
 
-            $login_token_data = $this->generateTokenWithExpiration();
+            $customer_type = $email = '';
+            if ($login_user->branch_id > 0) {
+                $user_type = 'branch';
 
-            if ($user_type == 'admin') {
-                Admin::where('id', $login_user->id)->update([
-                    'token'        => $login_token_data['token'],
-                    'token_expiry' => $login_token_data['expiry']
-                ]);
+                $branch = Branch::where('id', $login_user->branch_id)->first();
+
+                if (!empty($branch)) {
+                    $customer_type = $branch->customer_type;
+                    $email         = checkEmpty($branch, 'branch_email', '');
+                }
             }
 
+            $login_token_data = $this->generateTokenWithExpiration();
+
+            User::where('id', $login_user->id)->update([
+                'token'        => $login_token_data['token'],
+                'token_expiry' => $login_token_data['expiry']
+            ]);
+
             $login_data = [
-                'id'         => $login_user->id,
-                'first_name' => checkEmpty($login_user, 'first_name', ''),
-                'last_name'  => checkEmpty($login_user, 'last_name', ''),
-                'phone'      => checkEmpty($login_user, 'phone', ''),
-                'email'      => checkEmpty($login_user, 'email', ''),
-                'user_type'  => $user_type,
-                'token'      => $login_token_data['token']
+                'id'            => $login_user->id,
+                'first_name'    => checkEmpty($login_user, 'first_name', ''),
+                'last_name'     => checkEmpty($login_user, 'last_name', ''),
+                'phone'         => checkEmpty($login_user, 'phone', ''),
+                'email'         => $email,
+                'user_type'     => $user_type,
+                'token'         => $login_token_data['token'],
+                'customer_type' => $customer_type
             ];
 
             return prepare_response(200, true, 'Login successfully', $login_data);

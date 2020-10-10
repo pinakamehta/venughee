@@ -72,9 +72,13 @@ class InvoiceRepository
 
         $offset = ($page - 1) * $limit;
 
-        $invoices = $this->invoice->with(['customer'])->where('invoice_type', $invoice_type)->where(function ($query) {
-            $query->where('customer_id', '>', 0)->orWhere('branch_id', '>', 0);
-        });
+        $invoices = $this->invoice->with(['customer'])
+            ->where('invoice_type', $invoice_type)
+            ->where('added_by', $data['user_id'])
+            ->where(function ($query) {
+                $query->where('customer_id', '>', 0)
+                    ->orWhere('branch_id', '>', 0);
+            });
 
         if (!empty($data['invoice_date'])) {
             $invoices = $invoices->where('invoice_date', $data['invoice_date']);

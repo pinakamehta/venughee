@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\Admin;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAdminsTable extends Migration
+class CreateUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,10 +15,11 @@ class CreateAdminsTable extends Migration
      */
     public function up()
     {
-        Schema::create('admins', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->integer('branch_id')->default(0);
             $table->string('first_name', 50);
-            $table->string('last_name', 50);
+            $table->string('last_name', 50)->nullable();
             $table->string('phone', 13);
             $table->string('password', 500);
             $table->string('token', 500)->nullable();
@@ -27,7 +28,7 @@ class CreateAdminsTable extends Migration
             $table->timestamps();
         });
 
-        Admin::create([
+        User::create([
             'first_name' => 'Admin',
             'last_name'  => 'Admin',
             'phone'      => '7894561230',
@@ -43,6 +44,6 @@ class CreateAdminsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('admins');
+        Schema::dropIfExists('users');
     }
 }

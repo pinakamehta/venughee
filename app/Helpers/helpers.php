@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Admin;
+use App\Models\User;
 
 if (!function_exists('prepare_response')) {
     function prepare_response($code, $status, $message, $data = [], $extra_data = [])
@@ -38,8 +38,9 @@ if (!function_exists('checkEmpty')) {
 if (!function_exists('validate_admin_and_session_token')) {
     function validate_admin_and_session_token($user_id, $token)
     {
-        $admin          = new Admin();
+        $admin          = new User();
         $admin_response = $admin->where('id', '=', $user_id)
+            ->where('branch_id', 0)
             ->first();
 
         if (!isset($admin_response)) {
@@ -59,7 +60,7 @@ if (!function_exists('validate_admin_and_session_token')) {
 if (!function_exists('validate_admin_or_branch_and_session_token')) {
     function validate_admin_or_branch_and_session_token($user_id, $token)
     {
-        $admin          = new Admin();
+        $admin          = new User();
         $admin_response = $admin->where('id', '=', $user_id)
             ->first();
 
@@ -85,5 +86,19 @@ if (!function_exists('is_token_active')) {
         } else {
             return false;
         }
+    }
+}
+
+if (!function_exists('random_characters')) {
+    function random_characters($count = 2)
+    {
+        $seed = str_split('ABCDEFGHIJKLMNOPQRSTUVWXYZ^@!-_=+');
+        shuffle($seed);
+        $random_2_letter = '';
+        foreach (array_rand($seed, $count) as $k) {
+            $random_2_letter .= $seed[ $k ];
+        }
+
+        return $random_2_letter;
     }
 }
