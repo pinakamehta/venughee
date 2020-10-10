@@ -35,7 +35,7 @@ class ItemRepository
                     'sales_description'    => checkEmpty($item, 'sales_description', ''),
                     'purchase_price'       => $item->purchase_price,
                     'purchase_description' => checkEmpty($item, 'purchase_description', ''),
-                    'gst'                  => checkEmpty($item, 'gst', 0),
+                    'gst'                  => checkEmpty($item, 'gst', ''),
                 ];
             }
         }
@@ -48,7 +48,7 @@ class ItemRepository
             'item_name'            => $data['item_name'],
             'unit'                 => checkEmpty($data, 'unit', 0),
             'sales_price'          => checkEmpty($data, 'sales_price', 0),
-            'gst'                  => checkEmpty($data, 'gst', 0),
+            'gst'                  => checkEmpty($data, 'gst', null),
             'sales_description'    => checkEmpty($data, 'sales_description', ''),
             'purchase_price'       => checkEmpty($data, 'purchase_price', 0),
             'purchase_description' => checkEmpty($data, 'purchase_description', ''),
