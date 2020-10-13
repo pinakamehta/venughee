@@ -98,6 +98,7 @@ class InvoiceRepository
                     'id'              => $invoice->id,
                     'invoice_number'  => !empty($invoice->custom_invoice_number) ? $invoice->custom_invoice_number : $invoice->invoice_number,
                     'invoice_type'    => $invoice->invoice_type,
+                    'payment_mode'    => $invoice->payment_mode,
                     'items'           => checkEmpty($invoice, 'items', ''),
                     'tax_amount'      => $invoice->tax_amount,
                     'sub_total'       => $invoice->sub_total,
@@ -154,6 +155,7 @@ class InvoiceRepository
         }
 
         $invoice->invoice_date = $data['invoice_date'];
+        $invoice->payment_mode = $data['payment_mode'];
         $invoice->tax_amount   = checkEmpty($data, 'tax_amount', 0);
         $invoice->sub_total    = checkEmpty($data, 'sub_total', 0);
         $invoice->grand_total  = checkEmpty($data, 'grand_total', 0);
@@ -172,6 +174,7 @@ class InvoiceRepository
             'id'              => $invoice->id,
             'invoice_number'  => !empty($invoice->custom_invoice_number) ? $invoice->custom_invoice_number : $invoice->invoice_number,
             'invoice_type'    => $invoice->invoice_type,
+            'payment_mode'    => $invoice->payment_mode,
             'invoice_date'    => $invoice->invoice_date,
             'items'           => checkEmpty($invoice, 'items', ''),
             'tax_amount'      => $invoice->tax_amount,

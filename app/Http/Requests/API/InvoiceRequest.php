@@ -36,6 +36,7 @@ class InvoiceRequest extends FormRequest
             case 'update':
                 $rules = [
                     'invoice_number' => 'required',
+                    'payment_mode'   => 'required',
                     'invoice_date'   => 'required',
                     'consumer_id'    => 'required',
                     'invoice_for'    => 'required|in:customer,branch'
