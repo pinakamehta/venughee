@@ -25,9 +25,10 @@ class InvoiceRepository
         $next_invoice_number = ($data['type'] == 'purchase') ? 'PI00001' : 'SI00001';
 
         if (!empty($last_invoice)) {
+            $next_invoice_number = $last_invoice_number;
             regenerate:
-            $prefix              = substr($last_invoice_number, 0, 2);
-            $invoice_digits      = substr($last_invoice_number, 2);
+            $prefix              = substr($next_invoice_number, 0, 2);
+            $invoice_digits      = substr($next_invoice_number, 2);
             $next_invoice_number = $prefix . str_pad($invoice_digits + 1, 5, '0', STR_PAD_LEFT);
 
             $invoice_number_detail = $this->invoice->where('invoice_number', $next_invoice_number)
