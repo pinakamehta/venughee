@@ -155,7 +155,7 @@ class InvoiceRepository
         }
 
         $invoice->invoice_date = $data['invoice_date'];
-        $invoice->payment_mode = $data['payment_mode'];
+        $invoice->payment_mode = checkEmpty($data, 'payment_mode', 'cash');
         $invoice->tax_amount   = checkEmpty($data, 'tax_amount', 0);
         $invoice->sub_total    = checkEmpty($data, 'sub_total', 0);
         $invoice->grand_total  = checkEmpty($data, 'grand_total', 0);
