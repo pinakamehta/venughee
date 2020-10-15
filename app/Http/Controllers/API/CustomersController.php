@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CustomerRequest;
 use App\Repositories\API\CustomerRepository;
-use Illuminate\Http\Request;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -23,8 +23,13 @@ class CustomersController extends Controller
         try {
             $customers = $this->customer_repository->getCustomers($request->all());
 
+            if (empty($customers)) {
+                return prepare_response(200, false, 'There is no customer available right now');
+            }
+
             return prepare_response(200, true, 'Customers have been retrieve successfully', $customers);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
+
             report($e);
             Log::channel('slack')->critical($request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
@@ -38,7 +43,7 @@ class CustomersController extends Controller
             $customer = $this->customer_repository->createCustomer($request->all());
             DB::commit();
             return prepare_response(200, true, 'Customer has been created', $customer);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             report($e);
             Log::channel('slack')->critical($request->all());

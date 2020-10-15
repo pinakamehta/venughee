@@ -5,12 +5,16 @@ namespace App\Repositories\API;
 
 
 use App\Models\Item;
+use Exception;
 
 class ItemRepository
 {
     public function getItems($data)
     {
+        $item_for = checkEmpty($data, 'item_for', 'sales');
+
         $items = Item::where('is_active', 1)
+            ->where('item_for', $item_for)
             ->where('added_by', $data['user_id'])
             ->get([
                 'id',
@@ -46,6 +50,7 @@ class ItemRepository
     {
         return Item::create([
             'item_name'            => $data['item_name'],
+            'item_for'             => checkEmpty($data, 'item_for', 'sales'),
             'unit'                 => checkEmpty($data, 'unit', 0),
             'sales_price'          => checkEmpty($data, 'sales_price', 0),
             'gst'                  => checkEmpty($data, 'gst', null),
@@ -61,7 +66,7 @@ class ItemRepository
         $item = Item::where('id', $item_id)->first();
 
         if (empty($item)) {
-            throw new \Exception('Invalid item id');
+            throw new Exception('Invalid item id');
         }
 
         $item->item_name            = $data['item_name'];

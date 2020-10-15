@@ -17,6 +17,7 @@ class CustomerRepository
     public function getCustomers($data)
     {
         $customers = $this->customer
+            ->where('type', $data['type'])
             ->where('added_by', $data['user_id'])
             ->get([
                 'id',
