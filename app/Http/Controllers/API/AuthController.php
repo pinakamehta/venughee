@@ -62,7 +62,7 @@ class AuthController extends Controller
             return prepare_response(200, true, 'Login successfully', $login_data);
         } catch (Exception $e) {
             report($e);
-            Log::channel('slack')->critical($request->all());
+            Log::channel('slack')->critical($request->getRequestUri(), $request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }
@@ -109,7 +109,7 @@ class AuthController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             report($e);
-            Log::channel('slack')->critical($request->all());
+            Log::channel('slack')->critical($request->getRequestUri(), $request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
         }
     }

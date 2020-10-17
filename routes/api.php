@@ -29,4 +29,5 @@ Route::group(['middleware' => 'login.check'], function () {
     Route::get('invoice/validate-id/{invoice_id}', 'API\InvoicesController@validateInvoiceId');
 
     Route::resource('customers', 'API\CustomersController');
+    Route::resource('banks', 'API\BanksController')->except(['create', 'edit']);
 });
