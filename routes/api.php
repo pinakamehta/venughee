@@ -19,6 +19,7 @@ Route::post('register', 'API\AuthController@register');
 
 Route::group(['middleware' => 'admin.check'], function () {
     Route::resource('branches', 'API\Admin\BranchesController');
+    Route::resource('expense-types', 'API\Admin\ExpenseTypesController')->except(['create', 'edit']);
 });
 
 Route::group(['middleware' => 'login.check'], function () {
@@ -30,4 +31,5 @@ Route::group(['middleware' => 'login.check'], function () {
 
     Route::resource('customers', 'API\CustomersController');
     Route::resource('banks', 'API\BanksController')->except(['create', 'edit']);
+    Route::resource('expenses', 'API\BanksController')->except(['create', 'edit']);
 });

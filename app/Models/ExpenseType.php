@@ -1,10 +1,10 @@
 <?php
 
-namespace App\API;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Bank extends Model
+class ExpenseType extends Model
 {
     protected $guarded = ['id'];
 }

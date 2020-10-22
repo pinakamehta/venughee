@@ -2,7 +2,7 @@
 
 namespace App\Repositories\API;
 
-use App\API\Bank;
+use App\Models\Bank;
 use Exception;
 
 class BankRepository
@@ -28,7 +28,8 @@ class BankRepository
                     'account_code'   => $bank->account_code,
                     'account_number' => $bank->account_number,
                     'bank_name'      => $bank->bank_name,
-                    'description'    => $bank->description
+                    'description'    => $bank->description,
+                    'balance'        => 0
                 ];
             }
         }
@@ -51,7 +52,8 @@ class BankRepository
                 'account_code'   => $bank->account_code,
                 'account_number' => $bank->account_number,
                 'bank_name'      => $bank->bank_name,
-                'description'    => $bank->description
+                'description'    => $bank->description,
+                'balance'        => 0
             ];
         }
 
