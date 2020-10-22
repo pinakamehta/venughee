@@ -18,7 +18,7 @@ class ExpenseRepository
     {
         $page         = checkEmpty($data, 'page', 1);
         $limit        = checkEmpty($data, 'limit', 25);
-        $offset = ($page - 1) * $limit;
+        $offset       = ($page - 1) * $limit;
         $transactions = $this->transaction->with(['bank', 'expense_type'])
             ->where('created_by', $data['user_id'])
             ->where('expense_type_id', '>', 0);
@@ -45,8 +45,7 @@ class ExpenseRepository
                     'expense_type'     => (!empty($transaction->expense_type)) ? $transaction->expense_type->expense_type_name : '',
                     'transaction_date' => $transaction->transaction_date,
                     'amount'           => $transaction->debit,
-                    'notes'            => $transaction->notes,
-                    'temp'             => 1
+                    'notes'            => checkEmpty($transaction, 'notes', '')
                 ];
             }
         }
@@ -95,7 +94,7 @@ class ExpenseRepository
             'expense_type'     => (!empty($transaction->expense_type)) ? $transaction->expense_type->expense_type_name : '',
             'transaction_date' => $transaction->transaction_date,
             'amount'           => $transaction->debit,
-            'notes'            => $transaction->notes
+            'notes'            => checkEmpty($transaction, 'notes', '')
         ];
     }
 
