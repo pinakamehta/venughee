@@ -1,9 +1,7 @@
 <?php
 
-namespace App\Models\API;
+namespace App\Models;
 
-use App\Models\Bank;
-use App\Models\ExpenseType;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model

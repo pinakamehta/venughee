@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\API\Transaction;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
