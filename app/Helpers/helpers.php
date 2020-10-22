@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\API\Transaction;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 if (!function_exists('prepare_response')) {
     function prepare_response($code, $status, $message, $data = [], $extra_data = [])
@@ -100,5 +102,16 @@ if (!function_exists('random_characters')) {
         }
 
         return $random_2_letter;
+    }
+}
+
+if (!function_exists('bank_balance')) {
+    function bank_balance($bank_id)
+    {
+        $transaction_total = Transaction::where('bank_id', $bank_id)
+            ->select(DB::raw("(sum(credit) - sum(debit)) as total"))
+            ->first();
+
+        return checkEmpty($transaction_total, 'total', 0);
     }
 }

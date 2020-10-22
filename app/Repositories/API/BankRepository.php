@@ -16,7 +16,8 @@ class BankRepository
 
     public function getBanks($data)
     {
-        $banks = $this->bank->where('added_by', $data['user_id'])->get();
+        $banks = $this->bank->where('added_by', $data['user_id'])
+            ->get();
 
         $bank_data = [];
 
@@ -29,7 +30,7 @@ class BankRepository
                     'account_number' => $bank->account_number,
                     'bank_name'      => $bank->bank_name,
                     'description'    => $bank->description,
-                    'balance'        => 0
+                    'balance'        => bank_balance($bank->id)
                 ];
             }
         }
@@ -53,7 +54,7 @@ class BankRepository
                 'account_number' => $bank->account_number,
                 'bank_name'      => $bank->bank_name,
                 'description'    => $bank->description,
-                'balance'        => 0
+                'balance'        => bank_balance($bank->id)
             ];
         }
 
