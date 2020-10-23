@@ -2,7 +2,7 @@
 
 namespace App\Repositories\API;
 
-use App\Models\API\Transaction;
+use App\Models\Transaction;
 use Exception;
 
 class ExpenseRepository
