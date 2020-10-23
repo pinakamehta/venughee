@@ -19,12 +19,12 @@ Route::post('register', 'API\AuthController@register');
 
 Route::group(['middleware' => 'admin.check'], function () {
     Route::resource('branches', 'API\Admin\BranchesController');
-    Route::resource('expense-types', 'API\Admin\ExpenseTypesController')->except(['create', 'edit']);
 });
 
 Route::group(['middleware' => 'login.check'], function () {
     Route::resource('items', 'API\ItemsController');
     Route::resource('invoices', 'API\InvoicesController');
+    Route::resource('expense-types', 'API\Admin\ExpenseTypesController')->except(['create', 'edit']);
 
     Route::post('invoice/next-id', 'API\InvoicesController@getNextInvoiceId');
     Route::get('invoice/validate-id/{invoice_id}', 'API\InvoicesController@validateInvoiceId');
