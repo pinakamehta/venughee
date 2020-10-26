@@ -3,15 +3,18 @@
 namespace App\Repositories\API;
 
 use App\Models\Bank;
+use App\Models\Transaction;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class BankRepository
 {
-    private $bank;
+    private $bank, $transaction;
 
     public function __construct()
     {
-        $this->bank = new Bank();
+        $this->bank        = new Bank();
+        $this->transaction = new Transaction();
     }
 
     public function getBanks($data)
@@ -21,8 +24,26 @@ class BankRepository
 
         $bank_data = [];
 
+        $cash_transactions = $this->transaction->where('bank_id', 0)
+            ->where('expense_type_id', 0)
+            ->where('credit', '>', 0)
+            ->where('debit', 0)
+            ->where('created_by', $data['user_id'])
+            ->select(DB::raw(DB::raw("(sum(credit) - sum(debit)) as total")))
+            ->first();
+
+        $bank_data[] = [
+            'id'             => 0,
+            'account_name'   => 'Petty Cash',
+            'account_code'   => '',
+            'account_number' => '',
+            'bank_name'      => '',
+            'description'    => '',
+            'balance'        => checkEmpty($cash_transactions, 'total', 0)
+        ];
+
         if (!empty($banks->toArray())) {
-            foreach ($banks as $bank) {
+            foreach ($banks as $key => $bank) {
                 $bank_data[] = [
                     'id'             => $bank->id,
                     'account_name'   => $bank->account_name,
