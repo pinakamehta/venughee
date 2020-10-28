@@ -52,6 +52,17 @@ class CashController extends Controller
         }
     }
 
+    public function show($transaction_id)
+    {
+        try {
+            $transaction_detail = $this->cashRepository->cashPaymentDetail($transaction_id);
+            return prepare_response(200, true, 'Cash payment detail has been retrieve', $transaction_detail);
+        } catch (\Exception $e) {
+            report($e);
+            return prepare_response(500, false, 'Sorry Something was wrong.!');
+        }
+    }
+
     public function update(CashRequest $request, $id)
     {
         DB::beginTransaction();

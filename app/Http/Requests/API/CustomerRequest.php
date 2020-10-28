@@ -36,6 +36,11 @@ class CustomerRequest extends FormRequest
                     'phone'         => 'required',
                 ];
                 break;
+            case 'customerInvoices':
+                $rules = [
+                    'customer_id' => 'required'
+                ];
+                break;
         }
         return $rules;
     }

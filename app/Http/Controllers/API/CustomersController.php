@@ -29,7 +29,6 @@ class CustomersController extends Controller
 
             return prepare_response(200, true, 'Customers have been retrieve successfully', $customers);
         } catch (Exception $e) {
-
             report($e);
             Log::channel('slack')->critical($request->getRequestUri(), $request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
@@ -45,6 +44,23 @@ class CustomersController extends Controller
             return prepare_response(200, true, 'Customer has been created', $customer);
         } catch (Exception $e) {
             DB::rollBack();
+            report($e);
+            Log::channel('slack')->critical($request->getRequestUri(), $request->all());
+            return prepare_response(500, false, 'Sorry Something was wrong.!');
+        }
+    }
+
+    public function customerInvoices(CustomerRequest $request)
+    {
+        try {
+            $customer_invoices = $this->customer_repository->getCustomerInvoices($request->all());
+
+            if (empty($customer_invoices)) {
+                return prepare_response(200, false, 'There is no invoice available for this customer');
+            }
+
+            return prepare_response(200, true, 'Customer Invoices have been retrieve', $customer_invoices);
+        } catch (Exception $e) {
             report($e);
             Log::channel('slack')->critical($request->getRequestUri(), $request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');

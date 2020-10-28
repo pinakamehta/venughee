@@ -2,16 +2,21 @@
 
 namespace App\Repositories\API;
 
+use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\Transaction;
+use Carbon\Carbon;
 use Exception;
 
 class InvoiceRepository
 {
-    private $invoice;
+    private $invoice, $transaction, $customer;
 
     public function __construct()
     {
-        $this->invoice = new Invoice();
+        $this->invoice     = new Invoice();
+        $this->transaction = new Transaction();
+        $this->customer    = new Customer();
     }
 
     public function getNextInvoiceId($data)
@@ -160,6 +165,36 @@ class InvoiceRepository
         $invoice->sub_total    = checkEmpty($data, 'sub_total', 0);
         $invoice->grand_total  = checkEmpty($data, 'grand_total', 0);
         $invoice->save();
+
+        if ($invoice->invoice_type == "purchase") {
+            $this->transaction->create([
+                'transaction_date' => Carbon::now()->format('Y-m-d'),
+                'debit'            => $invoice->grand_total,
+                'notes'            => "Payment given for Invoice #" . $data['invoice_number'],
+                'created_by'       => $data['user_id']
+            ]);
+        } else {
+            if ($invoice->payment_mode == "cash") {
+                $this->transaction->create([
+                    'transaction_date' => $invoice->invoice_date,
+                    'credit'           => $invoice->grand_total,
+                    'notes'            => "Payment received for Invoice #" . $data['invoice_number'],
+                    'created_by'       => $data['user_id']
+                ]);
+            } else {
+                if ($data['invoice_for'] == 'customer') {
+                    $customer_obj = $this->customer->where('id', $data['consumer_id'])->first();
+
+                    if (empty($customer_obj)) {
+                        throw new Exception("Customer not found for given id");
+                    }
+
+                    $customer_obj->total_debit = $customer_obj->total_debit + $invoice->grand_total;
+                    $customer_obj->save();
+                }
+            }
+        }
+
     }
 
     public function getInvoiceData($invoice_number)

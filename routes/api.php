@@ -32,6 +32,9 @@ Route::group(['middleware' => 'login.check'], function () {
     Route::resource('customers', 'API\CustomersController');
     Route::resource('banks', 'API\BanksController')->except(['create', 'edit']);
     Route::resource('expenses', 'API\ExpensesController')->except(['create', 'edit']);
+    Route::resource('transactions', 'API\TransactionsController')->only(['index']);
 
-    Route::resource('cash-payments', 'API\CashController')->except(['create', 'edit', 'show']);
+    Route::resource('cash-payments', 'API\CashController')->except(['create', 'edit']);
+
+    Route::get('customer/invoices', 'API\CustomersController@customerInvoices');
 });

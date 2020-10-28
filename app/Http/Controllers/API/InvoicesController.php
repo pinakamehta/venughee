@@ -85,10 +85,13 @@ class InvoicesController extends Controller
 
     public function update(InvoiceRequest $request, $id)
     {
+        DB::beginTransaction();
         try {
             $this->invoice_repository->editInvoice($request->all(), $id);
+            DB::commit();
             return prepare_response(200, true, 'Invoice successfully saved');
         } catch (Exception $e) {
+            DB::rollBack();
             report($e);
             Log::channel('slack')->critical($request->getRequestUri(), $request->all());
             return prepare_response(500, false, 'Sorry Something was wrong.!');
