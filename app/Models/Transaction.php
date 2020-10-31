@@ -17,4 +17,9 @@ class Transaction extends Model
     {
         return $this->hasOne(ExpenseType::class, 'id', 'expense_type_id');
     }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class, 'id', 'invoice_id');
+    }
 }

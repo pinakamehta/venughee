@@ -166,21 +166,35 @@ class InvoiceRepository
         $invoice->grand_total  = checkEmpty($data, 'grand_total', 0);
         $invoice->save();
 
+        $transaction = $this->transaction->where('invoice_id', $invoice->id)->first();
+
         if ($invoice->invoice_type == "purchase") {
-            $this->transaction->create([
-                'transaction_date' => Carbon::now()->format('Y-m-d'),
-                'debit'            => $invoice->grand_total,
-                'notes'            => "Payment given for Invoice #" . $data['invoice_number'],
-                'created_by'       => $data['user_id']
-            ]);
-        } else {
-            if ($invoice->payment_mode == "cash") {
+            if (empty($transaction)) {
                 $this->transaction->create([
-                    'transaction_date' => $invoice->invoice_date,
-                    'credit'           => $invoice->grand_total,
-                    'notes'            => "Payment received for Invoice #" . $data['invoice_number'],
+                    'transaction_date' => Carbon::now()->format('Y-m-d'),
+                    'debit'            => $invoice->grand_total,
+                    'invoice_id'       => $invoice->id,
+                    'notes'            => "Payment given for Invoice #" . $data['invoice_number'],
                     'created_by'       => $data['user_id']
                 ]);
+            } else {
+                $transaction->debit = $transaction->debit + $data['differentiate_amount'];
+                $transaction->save();
+            }
+        } else {
+            if ($invoice->payment_mode == "cash") {
+                if (empty($transaction)) {
+                    $this->transaction->create([
+                        'bank_id'          => checkEmpty($data, 'bank_id', 0),
+                        'transaction_date' => $invoice->invoice_date,
+                        'credit'           => $invoice->grand_total,
+                        'notes'            => "Payment received for Invoice #" . $data['invoice_number'],
+                        'created_by'       => $data['user_id']
+                    ]);
+                } else {
+                    $transaction->credit = $transaction->credit + $data['differentiate_amount'];
+                    $transaction->save();
+                }
             } else {
                 if ($data['invoice_for'] == 'customer') {
                     $customer_obj = $this->customer->where('id', $data['consumer_id'])->first();
@@ -189,7 +203,7 @@ class InvoiceRepository
                         throw new Exception("Customer not found for given id");
                     }
 
-                    $customer_obj->total_debit = $customer_obj->total_debit + $invoice->grand_total;
+                    $customer_obj->total_debit = $customer_obj->total_debit + $data['differentiate_amount'];
                     $customer_obj->save();
                 }
             }

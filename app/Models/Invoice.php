@@ -11,4 +11,8 @@ class Invoice extends Model
     public function customer() {
         return $this->hasOne(Customer::class, 'id', 'customer_id');
     }
+
+    public function branch() {
+        return $this->hasOne(Branch::class, 'id', 'branch_id');
+    }
 }

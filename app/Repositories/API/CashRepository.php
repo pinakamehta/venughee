@@ -57,6 +57,7 @@ class CashRepository
             'transaction_date' => $data['transaction_date'],
             'credit'           => $data['amount'],
             'notes'            => $data['notes'],
+            'type'             => 'cash',
             'created_by'       => $data['user_id']
         ]);
     }
