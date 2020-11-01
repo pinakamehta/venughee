@@ -111,7 +111,11 @@ class TransactionsRepository
         }
 
 
-        $title = "Petty Cash";
+        $title = $bank_name = "Petty Cash";
+
+        if (!empty($transaction->bank)) {
+            $bank_name = $transaction->bank->bank_name;
+        }
 
         if (!empty($transaction->expense_type)) {
             $title = $transaction->expense_type->expense_type_name;
@@ -127,6 +131,7 @@ class TransactionsRepository
             'transaction_id'   => $transaction->id,
             'transaction_date' => $transaction->transaction_date,
             'title'            => $title,
+            'bank_name'        => $bank_name,
             'notes'            => checkEmpty($transaction, 'notes', ''),
             'credit'           => $transaction->credit,
             'debit'            => $transaction->debit,
