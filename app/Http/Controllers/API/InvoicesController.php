@@ -30,7 +30,7 @@ class InvoicesController extends Controller
             DB::rollBack();
             report($e);
             Log::channel('slack')->critical($request->getRequestUri(), $request->all());
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -47,7 +47,7 @@ class InvoicesController extends Controller
 
         } catch (Exception $e) {
             report($e);
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -63,7 +63,7 @@ class InvoicesController extends Controller
             return prepare_response(200, true, 'Invoice list have been retrieve', $invoices);
         } catch (Exception $e) {
             report($e);
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -79,7 +79,7 @@ class InvoicesController extends Controller
             return prepare_response(200, true, 'Invoice details have been retrieve', $invoice);
         } catch (Exception $e) {
             report($e);
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -94,7 +94,7 @@ class InvoicesController extends Controller
             DB::rollBack();
             report($e);
             Log::channel('slack')->critical($request->getRequestUri(), $request->all());
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -105,8 +105,7 @@ class InvoicesController extends Controller
             return prepare_response(200, true, 'Invoice successfully deleted');
         } catch (Exception $e) {
             report($e);
-            Log::channel('slack')->critical($request->getRequestUri(), $request->all());
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 }

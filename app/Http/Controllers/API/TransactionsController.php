@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\API\TransactionsRepository;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TransactionsController extends Controller
 {
@@ -19,16 +20,72 @@ class TransactionsController extends Controller
     public function index(Request $request)
     {
         try {
-            $transactions = $this->transaction_repository->transaction($request->all());
+            $transactions = $this->transaction_repository->transactions($request->all());
 
             if (empty($transactions)) {
                 return prepare_response(200, false, 'There is no transaction available right now');
             }
             return prepare_response(200, true, 'All transactions have been retrieve', $transactions);
         } catch (Exception $e) {
-            echo $e->getMessage() . " " . $e->getFile() . " " . $e->getLine();die;
             report($e);
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
+        }
+    }
+
+    public function show($transaction_id)
+    {
+        try {
+            $transactions = $this->transaction_repository->transactionDetail($transaction_id);
+
+            return prepare_response(200, true, 'All transactions have been retrieve', $transactions);
+        } catch (Exception $e) {
+            report($e);
+            return prepare_response(500, false, $e->getMessage());
+        }
+    }
+
+    public function store(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $data = $request->all();
+            $this->transaction_repository->transactionCreate($data);
+            DB::commit();
+            return prepare_response(200, true, 'Transaction has been created');
+        } catch (Exception $e) {
+            DB::rollBack();
+            report($e);
+            return prepare_response(500, false, $e->getMessage());
+        }
+    }
+
+    public function update(Request $request, $transaction_id)
+    {
+        DB::beginTransaction();
+        try {
+            $data                   = $request->all();
+            $data['transaction_id'] = $transaction_id;
+            $this->transaction_repository->updateTransaction($data);
+            DB::commit();
+            return prepare_response(200, true, 'Transaction has been updated');
+        } catch (Exception $e) {
+            DB::rollBack();
+            report($e);
+            return prepare_response(500, false, $e->getMessage());
+        }
+    }
+
+    public function destroy($transaction_id)
+    {
+        DB::beginTransaction();
+        try {
+            $this->transaction_repository->deleteTransaction($transaction_id);
+            DB::commit();
+            return prepare_response(200, true, 'Transaction has been deleted');
+        } catch (Exception $e) {
+            DB::rollBack();
+            report($e);
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 }

@@ -36,7 +36,7 @@ class ExpensesController extends Controller
             return prepare_response(200, true, 'All expenses have been retrieve successfully', $transactions);
         } catch (Exception $e) {
             report($e);
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -48,7 +48,7 @@ class ExpensesController extends Controller
             return prepare_response(200, true, 'Expense details have been retrieve successfully', $transaction);
         } catch (Exception $e) {
             report($e);
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -70,7 +70,7 @@ class ExpensesController extends Controller
             echo $e->getMessage() . " " . $e->getFile() . " " . $e->getLine();die;
             report($e);
             Log::channel('slack')->critical($request->getRequestUri(), $request->all());
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -92,7 +92,7 @@ class ExpensesController extends Controller
             DB::rollBack();
             report($e);
             Log::channel('slack')->critical($request->getRequestUri(), $request->all());
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -112,8 +112,7 @@ class ExpensesController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             report($e);
-            Log::channel('slack')->critical($request->getRequestUri(), $request->all());
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 }

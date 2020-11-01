@@ -37,7 +37,7 @@ class ItemsController extends Controller
             return prepare_response(200, true, 'Items have been retrieve successfully', $items);
         } catch (Exception $e) {
             report($e);
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -58,7 +58,7 @@ class ItemsController extends Controller
             DB::rollBack();
             report($e);
             Log::channel('slack')->critical($request->getRequestUri(), $request->all());
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -73,7 +73,7 @@ class ItemsController extends Controller
             DB::rollBack();
             report($e);
             Log::channel('slack')->critical($request->getRequestUri(), $request->all());
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -85,8 +85,7 @@ class ItemsController extends Controller
             return prepare_response(200, true, 'Item has been deleted');
         } catch (Exception $e) {
             report($e);
-            Log::channel('slack')->critical($request->getRequestUri(), $request->all());
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 }

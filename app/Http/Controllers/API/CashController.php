@@ -32,7 +32,7 @@ class CashController extends Controller
             return prepare_response(200, true, 'Here are your all cash transactions', $transactions);
         } catch (Exception $e) {
             report($e);
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -48,7 +48,7 @@ class CashController extends Controller
             DB::rollBack();
             report($e);
             Log::channel('slack')->critical($request->getRequestUri(), $request->all());
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -59,7 +59,7 @@ class CashController extends Controller
             return prepare_response(200, true, 'Cash payment detail has been retrieve', $transaction_detail);
         } catch (\Exception $e) {
             report($e);
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -76,7 +76,7 @@ class CashController extends Controller
             report($e);
             echo $e->getMessage() . " " . $e->getFile() . " " . $e->getLine();die;
             Log::channel('slack')->critical($request->getRequestUri(), $request->all());
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -91,7 +91,7 @@ class CashController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             report($e);
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 }

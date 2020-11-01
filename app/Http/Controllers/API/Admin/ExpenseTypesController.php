@@ -36,7 +36,7 @@ class ExpenseTypesController extends Controller
             return prepare_response(200, true, 'Expense types have been retrieve', $expense_types);
         } catch (Exception $e) {
             report($e);
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -57,7 +57,7 @@ class ExpenseTypesController extends Controller
             DB::rollBack();
             report($e);
             Log::channel('slack')->critical($request->getRequestUri(), $request->all());
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -75,7 +75,7 @@ class ExpenseTypesController extends Controller
             return prepare_response(200, true, 'Expense type details have been retrieve', $expense_type);
         } catch (Exception $e) {
             report($e);
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -97,7 +97,7 @@ class ExpenseTypesController extends Controller
             DB::rollBack();
             report($e);
             Log::channel('slack')->critical($request->getRequestUri(), $request->all());
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 
@@ -117,7 +117,7 @@ class ExpenseTypesController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             report($e);
-            return prepare_response(500, false, 'Sorry Something was wrong.!');
+            return prepare_response(500, false, $e->getMessage());
         }
     }
 }

@@ -187,6 +187,7 @@ class InvoiceRepository
                     $this->transaction->create([
                         'bank_id'          => checkEmpty($data, 'bank_id', 0),
                         'transaction_date' => $invoice->invoice_date,
+                        'invoice_id'       => $invoice->id,
                         'credit'           => $invoice->grand_total,
                         'notes'            => "Payment received for Invoice #" . $data['invoice_number'],
                         'created_by'       => $data['user_id']
