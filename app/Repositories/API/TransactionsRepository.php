@@ -81,7 +81,7 @@ class TransactionsRepository
                 throw new Exception("Customer not found for given id");
             }
 
-            $customer->total_debil -= $data['amount'];
+            $customer->total_debit -= $data['amount'];
             $customer->save();
         }
         $this->transaction->create([
