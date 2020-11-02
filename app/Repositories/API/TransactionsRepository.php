@@ -82,6 +82,7 @@ class TransactionsRepository
             }
 
             $customer->total_debil -= $data['amount'];
+            $customer->save();
         }
         $this->transaction->create([
             'transaction_date' => $data['transaction_date'],
