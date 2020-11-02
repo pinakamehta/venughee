@@ -34,6 +34,7 @@ class TransactionsRepository
             ->where('bank_id', $bank_id)
             ->where('created_by', $data['user_id'])
             ->orderBy('transaction_date', 'DESC')
+            ->orderBy('id', 'DESC')
             ->limit($limit)
             ->offset($offset)
             ->get();
