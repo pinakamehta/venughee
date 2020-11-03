@@ -20,6 +20,7 @@ class ItemRepository
                 'id',
                 'item_name',
                 'unit',
+                'stock',
                 'sales_price',
                 'sales_description',
                 'purchase_price',
@@ -35,6 +36,7 @@ class ItemRepository
                     'id'                   => $item->id,
                     'item_name'            => $item->item_name,
                     'unit'                 => $item->unit,
+                    'stock'                => $item->stock,
                     'sales_price'          => $item->sales_price,
                     'sales_description'    => checkEmpty($item, 'sales_description', ''),
                     'purchase_price'       => $item->purchase_price,
@@ -51,7 +53,8 @@ class ItemRepository
         return Item::create([
             'item_name'            => $data['item_name'],
             'item_for'             => checkEmpty($data, 'item_for', 'sales'),
-            'unit'                 => checkEmpty($data, 'unit', 0),
+            'unit'                 => checkEmpty($data, 'unit', 'kg'),
+            'stock'                => checkEmpty($data, 'stock', 0),
             'sales_price'          => checkEmpty($data, 'sales_price', 0),
             'gst'                  => checkEmpty($data, 'gst', null),
             'sales_description'    => checkEmpty($data, 'sales_description', ''),
@@ -70,12 +73,13 @@ class ItemRepository
         }
 
         $item->item_name            = $data['item_name'];
-        $item->unit                 = checkEmpty($data, 'unit', 0);
-        $item->sales_price          = checkEmpty($data, 'sales_price', 0);
-        $item->gst                  = checkEmpty($data, 'gst', 0);
-        $item->sales_description    = checkEmpty($data, 'sales_description', '');
-        $item->purchase_price       = checkEmpty($data, 'purchase_price', 0);
-        $item->purchase_description = checkEmpty($data, 'purchase_description', '');
+        $item->unit                 = checkEmpty($data, 'unit', $item->unit);
+        $item->stock                = checkEmpty($data, 'stock', $item->stock);
+        $item->sales_price          = checkEmpty($data, 'sales_price', $item->sales_price);
+        $item->gst                  = checkEmpty($data, 'gst', $item->gst);
+        $item->sales_description    = checkEmpty($data, 'sales_description', $item->sales_description);
+        $item->purchase_price       = checkEmpty($data, 'purchase_price', $item->purchase_price);
+        $item->purchase_description = checkEmpty($data, 'purchase_description', $item->purchase_description);
 
         $item->save();
     }
@@ -83,5 +87,16 @@ class ItemRepository
     public function deleteItem($item_id)
     {
         Item::where('id', $item_id)->delete();
+    }
+
+    public function itemStock($item_id)
+    {
+        $item = Item::where('id', $item_id)->first();
+
+        if (empty($item)) {
+            throw new Exception('Invalid item id');
+        }
+
+        return $item->stock;
     }
 }

@@ -88,4 +88,16 @@ class ItemsController extends Controller
             return prepare_response(500, false, $e->getMessage());
         }
     }
+
+    public function itemStock($id)
+    {
+        try {
+            $item_stock = $this->item_repository->itemStock($id);
+
+            return prepare_response(200, true, 'Item stock has been retrieved', ['current_stock' => $item_stock]);
+        } catch (Exception $e) {
+            report($e);
+            return prepare_response(500, false, $e->getMessage());
+        }
+    }
 }

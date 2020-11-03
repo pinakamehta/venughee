@@ -37,4 +37,5 @@ Route::group(['middleware' => 'login.check'], function () {
     Route::resource('cash-payments', 'API\CashController')->except(['create', 'edit']);
 
     Route::get('customer/invoices', 'API\CustomersController@customerInvoices');
+    Route::get('item/current-stock/{id}', 'API\ItemsController@itemStock');
 });
