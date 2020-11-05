@@ -4,16 +4,24 @@
 namespace App\Repositories\API;
 
 
+use App\Models\Invoice;
 use App\Models\Item;
 use Exception;
 
 class ItemRepository
 {
+    private $item;
+
+    public function __construct()
+    {
+        $this->item = new Item();
+    }
+
     public function getItems($data)
     {
         $item_for = checkEmpty($data, 'item_for', 'sales');
 
-        $items = Item::where('is_active', 1)
+        $items = $this->item->where('is_active', 1)
             ->where('item_for', $item_for)
             ->where('added_by', $data['user_id'])
             ->get([
@@ -50,7 +58,7 @@ class ItemRepository
 
     public function addItem($data)
     {
-        return Item::create([
+        return $this->item->create([
             'item_name'            => $data['item_name'],
             'item_for'             => checkEmpty($data, 'item_for', 'sales'),
             'unit'                 => checkEmpty($data, 'unit', 'kg'),
@@ -66,7 +74,7 @@ class ItemRepository
 
     public function updateItem($data, $item_id)
     {
-        $item = Item::where('id', $item_id)->first();
+        $item = $this->item->where('id', $item_id)->first();
 
         if (empty($item)) {
             throw new Exception('Invalid item id');
@@ -86,17 +94,59 @@ class ItemRepository
 
     public function deleteItem($item_id)
     {
-        Item::where('id', $item_id)->delete();
+        $this->item->where('id', $item_id)->delete();
     }
 
     public function itemStock($item_id)
     {
-        $item = Item::where('id', $item_id)->first();
+        $item = $this->item->where('id', $item_id)->first();
 
         if (empty($item)) {
             throw new Exception('Invalid item id');
         }
 
         return $item->stock;
+    }
+
+    public function getInvoices($item_id)
+    {
+        $item = $this->item->where('id', $item_id)->first();
+
+        if (empty($item)) {
+            throw new Exception("Invalid Item Id");
+        }
+
+        $item_data = [
+            'id'                   => $item->id,
+            'item_name'            => $item->item_name,
+            'unit'                 => $item->unit,
+            'stock'                => $item->stock,
+            'sales_price'          => $item->sales_price,
+            'sales_description'    => checkEmpty($item, 'sales_description', ''),
+            'purchase_price'       => $item->purchase_price,
+            'purchase_description' => checkEmpty($item, 'purchase_description', ''),
+            'gst'                  => checkEmpty($item, 'gst', ''),
+        ];
+
+        $invoices = Invoice::leftJoin("stock_transactions", "stock_transactions.invoice_id", "=", "invoices.id")
+            ->where("stock_transactions.item_id", $item->id)
+            ->get();
+
+        $invoice_data = [];
+
+        if (!empty($invoices)) {
+            foreach ($invoices as $invoice) {
+                $invoice_data[] = [
+                    "title"          => "Invoice",
+                    "invoice_number" => !empty($invoice->custom_invoice_number) ? $invoice->custom_invoice_number : $invoice->invoice_number,
+                    "invoice_date"   => $invoice->invoice_date,
+                    "item_quantity"  => $invoice->item_quantity
+                ];
+            }
+        }
+
+        $item_data['invoices'] = $invoice_data;
+
+        return $item_data;
     }
 }

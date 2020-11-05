@@ -4,19 +4,23 @@ namespace App\Repositories\API;
 
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\Item;
+use App\Models\StockTransaction;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Exception;
 
 class InvoiceRepository
 {
-    private $invoice, $transaction, $customer;
+    private $invoice, $transaction, $customer, $stock_transaction, $item;
 
     public function __construct()
     {
-        $this->invoice     = new Invoice();
-        $this->transaction = new Transaction();
-        $this->customer    = new Customer();
+        $this->invoice           = new Invoice();
+        $this->transaction       = new Transaction();
+        $this->customer          = new Customer();
+        $this->item              = new Item();
+        $this->stock_transaction = new StockTransaction();
     }
 
     public function getNextInvoiceId($data)
@@ -147,6 +151,32 @@ class InvoiceRepository
 
         if (!empty($data['items'])) {
             $invoice->items = $data['items'];
+
+            $item_data = json_decode($data['items']);
+
+            foreach ($item_data as $item) {
+                if (!empty($item->quantity)) {
+                    $itemObj = $this->item->where('id', $item->id)->first();
+
+                    if (empty($itemObj)) {
+                        throw new Exception('Invalid item id');
+                    }
+
+                    if ($itemObj->stock < $item->quantity) {
+                        throw new Exception("You have not sufficient stock for " . strtoupper($item->item_name));
+                    }
+
+                    $itemObj->stock -= $item->quantity;
+                    $itemObj->save();
+
+                    $this->stock_transaction->create([
+                        'invoice_id'    => $invoice_id,
+                        'item_id'       => $item->id,
+                        'item_quantity' => $item->quantity,
+                        'notes'         => "Item deduct from stock for Invoice #" . $data['invoice_number']
+                    ]);
+                }
+            }
         }
 
         if (!empty($data['terms_condition'])) {

@@ -62,6 +62,20 @@ class ItemsController extends Controller
         }
     }
 
+
+    public function show($item_id)
+    {
+        try {
+            $item_data = $this->item_repository->getInvoices($item_id);
+
+            return prepare_response(200, true, 'Item invoices have been retrieve', $item_data);
+        } catch (Exception $e) {
+            report($e);
+            Log::channel('slack')->critical("item detail API", [$item_id]);
+            return prepare_response(500, false, $e->getMessage());
+        }
+    }
+
     public function update(ItemRequest $request, $item_id)
     {
         DB::beginTransaction();
