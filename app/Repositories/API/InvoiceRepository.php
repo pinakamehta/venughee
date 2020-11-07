@@ -166,7 +166,7 @@ class InvoiceRepository
                         throw new Exception("You have not sufficient stock for " . strtoupper($item->item_name));
                     }
 
-                    $itemObj->stock -= $item->quantity;
+                    $itemObj->stock = $itemObj->stock - $item->quantity;
                     $itemObj->save();
 
                     $this->stock_transaction->create([
