@@ -166,15 +166,30 @@ class InvoiceRepository
                         throw new Exception("You have not sufficient stock for " . strtoupper($item->item_name));
                     }
 
-                    $itemObj->stock = $itemObj->stock - $item->quantity;
-                    $itemObj->save();
+                    if (empty($item->is_update) || $item->is_update == 0) {
+                        $itemObj->stock = $itemObj->stock - $item->quantity;
+                        $itemObj->save();
 
-                    $this->stock_transaction->create([
-                        'invoice_id'    => $invoice_id,
-                        'item_id'       => $item->id,
-                        'item_quantity' => $item->quantity,
-                        'notes'         => "Item deduct from stock for Invoice #" . $data['invoice_number']
-                    ]);
+                        $this->stock_transaction->create([
+                            'invoice_id'    => $invoice_id,
+                            'item_id'       => $item->id,
+                            'item_quantity' => $item->quantity,
+                            'notes'         => "Item deduct from stock for Invoice #" . $data['invoice_number']
+                        ]);
+                    } else {
+                        $stock_transaction = $this->stock_transaction->where("invoice_id", $invoice_id)
+                            ->where("item_id", $item->id)
+                            ->first();
+
+                        $stock_item_quantity = $stock_transaction->item_quantity;
+                        $difference = $stock_item_quantity - $item->qantity;
+
+                        $itemObj->stock = $itemObj->stock + $difference;
+                        $itemObj->save();
+
+                        $stock_transaction->item_quantity = $item->quantity;
+                        $stock_transaction->save();
+                    }
                 }
             }
         }
