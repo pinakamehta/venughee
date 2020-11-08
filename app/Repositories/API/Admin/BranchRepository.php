@@ -64,9 +64,7 @@ class BranchRepository
 
         $login_mail_data = ['username' => $data['branch_contact_number'], 'password' => $auto_generated_password];
 
-        Mail::send('emails.send_login_detail', [
-            $login_mail_data
-        ], function ($message) use ($data) {
+        Mail::send('emails.send_login_detail', $login_mail_data, function ($message) use ($data) {
             $message->to($data['branch_email'])->subject('Login Details.!');
         });
         return;
