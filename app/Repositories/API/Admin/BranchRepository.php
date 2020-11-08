@@ -53,7 +53,8 @@ class BranchRepository
             'gst_number'   => $data['gst_number']
         ]);
 
-        $auto_generated_password = random_characters(6);
+//        $auto_generated_password = random_characters(6);
+        $auto_generated_password = 123456;
 
         $this->user->create([
             'branch_id'  => $branch->id,
@@ -64,7 +65,7 @@ class BranchRepository
 
         $login_mail_data = ['username' => $data['branch_contact_number'], 'password' => $auto_generated_password];
 
-        Mail::to($data['branch_email'])->send(new SendLoginDetailMail($login_mail_data));
+//        Mail::to($data['branch_email'])->send(new SendLoginDetailMail($login_mail_data));
         return;
     }
 
