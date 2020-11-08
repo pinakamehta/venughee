@@ -65,6 +65,7 @@ class BranchRepository
         $login_mail_data = ['username' => $data['branch_contact_number'], 'password' => $auto_generated_password];
 
         Mail::to($data['branch_email'])->send(new SendLoginDetailMail($login_mail_data));
+        return;
     }
 
     public function editBranch($branchId, $data)
