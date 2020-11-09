@@ -23,12 +23,13 @@ class BranchesController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param BranchRequest $request
      * @return JsonResponse
      */
-    public function index()
+    public function index(BranchRequest $request)
     {
         try {
-            $branches = $this->branch_repository->branches();
+            $branches = $this->branch_repository->branches($request->all());
 
             return prepare_response(200, true, "Branches have been retrieved successfully", $branches);
         } catch (Exception $e) {
