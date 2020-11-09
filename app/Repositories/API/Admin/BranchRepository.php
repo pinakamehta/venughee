@@ -19,9 +19,17 @@ class BranchRepository
         $this->user   = new User();
     }
 
-    public function branches()
+    public function branches($data)
     {
-        $branches = $this->branch->with(['branchUser'])->get();
+        $page   = checkEmpty($data, 'page', 1);
+        $limit  = checkEmpty($data, 'limit', 25);
+        $offset = ($page - 1) * $limit;
+
+        $branches = $this->branch->with(['branchUser'])
+            ->orderBy("is_active", "DESC")
+            ->limit($limit)
+            ->offset($offset)
+            ->get();
 
         if (empty($branches->toArray())) {
             throw new Exception("There is no branch available right now");
