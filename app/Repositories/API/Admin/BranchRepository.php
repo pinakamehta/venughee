@@ -4,12 +4,10 @@
 namespace App\Repositories\API\Admin;
 
 
-use App\Mail\SendLoginDetailMail;
 use App\Models\Branch;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 
 class BranchRepository
 {
@@ -23,7 +21,7 @@ class BranchRepository
 
     public function branches()
     {
-        $branches = $this->branch->get();
+        $branches = $this->branch->with(['branchUser'])->get();
 
         if (empty($branches->toArray())) {
             throw new Exception("There is no branch available right now");
@@ -33,11 +31,13 @@ class BranchRepository
 
         foreach ($branches as $branch) {
             $branch_data[] = [
-                'branch_name'  => $branch->branch_name,
-                'branch_email' => $branch->branch_email,
-                'address'      => $branch->address,
-                'gst_number'   => $branch->gst_number,
-                'is_active'    => $branch->is_active
+                'id'             => $branch->id,
+                'contact_number' => $branch->branchUser->phone,
+                'branch_name'    => $branch->branch_name,
+                'branch_email'   => $branch->branch_email,
+                'address'        => $branch->address,
+                'gst_number'     => $branch->gst_number,
+                'is_active'      => $branch->is_active
             ];
         }
 
