@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,6 +18,9 @@ Route::post('register', 'API\AuthController@register');
 
 Route::group(['middleware' => 'admin.check'], function () {
     Route::resource('branches', 'API\Admin\BranchesController');
+
+    Route::post("branch/login", 'API\Admin\BranchesController@branchLogin');
+    Route::get("home", 'API\Admin\HomeController@homeData');
 });
 
 Route::group(['middleware' => 'login.check'], function () {

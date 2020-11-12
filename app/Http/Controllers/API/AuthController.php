@@ -29,19 +29,18 @@ class AuthController extends Controller
                 return prepare_response(200, false, 'Please enter correct login details');
             }
 
-            $customer_type = $email = '';
+            $email = '';
             if ($login_user->branch_id > 0) {
                 $user_type = 'branch';
 
                 $branch = Branch::where('id', $login_user->branch_id)->first();
 
                 if (!empty($branch)) {
-                    $customer_type = $branch->customer_type;
-                    $email         = checkEmpty($branch, 'branch_email', '');
+                    $email = checkEmpty($branch, 'branch_email', '');
                 }
             }
 
-            $login_token_data = $this->generateTokenWithExpiration();
+            $login_token_data = generateTokenWithExpiration();
 
             User::where('id', $login_user->id)->update([
                 'token'        => $login_token_data['token'],
@@ -55,8 +54,7 @@ class AuthController extends Controller
                 'phone'         => checkEmpty($login_user, 'phone', ''),
                 'email'         => $email,
                 'user_type'     => $user_type,
-                'token'         => $login_token_data['token'],
-                'customer_type' => $customer_type
+                'token' => $login_token_data['token']
             ];
 
             return prepare_response(200, true, 'Login successfully', $login_data);
@@ -67,25 +65,12 @@ class AuthController extends Controller
         }
     }
 
-    public function generateTokenWithExpiration()
-    {
-        $encrypted_string = Hash::make(rand() . time() . rand());
-        $encrypted_string = str_replace(' ', '-', $encrypted_string); // Replaces all spaces with hyphens.
-        $token_string     = preg_replace('/[^A-Za-z0-9\-]/', '', $encrypted_string); // Removes special chars.
-        $token_expiry     = time() + 3600000;
-
-        return [
-            'token'  => $token_string,
-            'expiry' => $token_expiry,
-        ];
-    }
-
     public function register(AuthRequest $request)
     {
         DB::beginTransaction();
         try {
             $data             = $request->all();
-            $login_token_data = $this->generateTokenWithExpiration();
+            $login_token_data = generateTokenWithExpiration();
 
             $customer = Customer::create([
                 'first_name'   => $data['first_name'],

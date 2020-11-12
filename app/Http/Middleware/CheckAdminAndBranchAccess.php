@@ -29,8 +29,9 @@ class CheckAdminAndBranchAccess
                 ]);
         }
 
-        $user = validate_admin_or_branch_and_session_token($data['user_id'], $data['token']);
-        if (!$user) {
+        $response = validate_admin_or_branch_and_session_token($data['user_id'], $data['token']);
+
+        if (!$response) {
             return response()
                 ->json([
                     'success' => false,
@@ -39,6 +40,14 @@ class CheckAdminAndBranchAccess
                 ]);
         }
 
+        if ($response['login_as_branch'] && $request->method() != 'GET') {
+            return response()
+                ->json([
+                    'success' => false,
+                    'code'    => 406,
+                    'message' => 'You have no rights for this action'
+                ]);
+        }
         return $next($request);
     }
 }

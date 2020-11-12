@@ -3,6 +3,7 @@
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 if (!function_exists('prepare_response')) {
     function prepare_response($code, $status, $message, $data = [], $extra_data = [])
@@ -69,14 +70,24 @@ if (!function_exists('validate_admin_or_branch_and_session_token')) {
         if (!isset($admin_response)) {
             return false;
         }
+        if (!in_array($token, [$admin_response->token, $admin_response->branch_token])) {
+            return false;
+        }
 
         $session_token_expired_at = $admin_response->token_expiry;
+        $login_as_branch          = false;
+        if ($admin_response->branch_token == $token) {
+            $login_as_branch          = true;
+            $session_token_expired_at = $admin_response->branch_token_expiry;
+        }
 
         if (empty($session_token_expired_at) || !is_token_active($session_token_expired_at)) {
             return false;
         }
 
-        return $admin_response;
+        return [
+            'login_as_branch' => $login_as_branch
+        ];
     }
 }
 
@@ -113,5 +124,21 @@ if (!function_exists('bank_balance')) {
             ->first();
 
         return checkEmpty($transaction_total, 'total', 0);
+    }
+}
+
+if (!function_exists('generateTokenWithExpiration')) {
+    function generateTokenWithExpiration()
+    {
+        $encrypted_string = Hash::make(rand() . time() . rand());
+        $encrypted_string = str_replace(' ', '-', $encrypted_string); // Replaces all spaces with hyphens.
+        $token_string     = preg_replace('/[^A-Za-z0-9\-]/', '', $encrypted_string); // Removes special chars.
+
+        $token_expiry = time() + 3600000;
+
+        return [
+            'token'  => $token_string,
+            'expiry' => $token_expiry,
+        ];
     }
 }

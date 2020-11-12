@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 
-class BranchRequest extends FormRequest
+class HomeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,13 +28,10 @@ class BranchRequest extends FormRequest
         $rules = [];
 
         switch ($this->route()->getActionMethod()) {
-            case 'store':
+            case 'homeData':
                 $rules = [
-                    'branch_name'           => 'required',
-                    'gst_number'            => 'required',
-                    'branch_email'          => 'required|unique:branches,branch_email',
-                    'branch_contact_number' => 'required|unique:users,phone',
-                    'address'               => 'required'
+                    'from_date' => 'required',
+                    'to_date'   => 'required'
                 ];
                 break;
 
