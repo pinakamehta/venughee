@@ -82,7 +82,7 @@ class InvoiceRepository
 
         $offset = ($page - 1) * $limit;
 
-        $invoices = $this->invoice->with(['customer'])
+        $invoices = $this->invoice->with(['customer', 'branch'])
             ->where('invoice_type', $invoice_type)
             ->where('added_by', $data['user_id'])
             ->where(function ($query) {
@@ -117,6 +117,10 @@ class InvoiceRepository
                         'customer_id'   => !empty($invoice->customer) ? $invoice->customer->id : 0,
                         'company_name'  => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'company_name', '') : '',
                         'customer_name' => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'customer_name', '') : '',
+                    ],
+                    'branch'          => [
+                        'branch_id'   => !empty($invoice->branch) ? $invoice->branch->id : 0,
+                        'branch_name' => !empty($invoice->branch) ? checkEmpty($invoice->branch, 'branch_name', '') : '',
                     ]
                 ];
             }
@@ -182,7 +186,7 @@ class InvoiceRepository
                             ->first();
 
                         $stock_item_quantity = $stock_transaction->item_quantity;
-                        $difference = $stock_item_quantity - $item->qantity;
+                        $difference          = $stock_item_quantity - $item->qantity;
 
                         $itemObj->stock = $itemObj->stock + $difference;
                         $itemObj->save();
