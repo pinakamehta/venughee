@@ -24,6 +24,7 @@ Route::group(['middleware' => 'admin.check'], function () {
 });
 
 Route::group(['middleware' => 'login.check'], function () {
+    Route::get("branch/home", 'API\HomeController@homeData');
     Route::resource('items', 'API\ItemsController');
     Route::resource('invoices', 'API\InvoicesController');
     Route::resource('expense-types', 'API\Admin\ExpenseTypesController')->except(['create', 'edit']);
