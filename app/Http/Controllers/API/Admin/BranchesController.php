@@ -131,7 +131,6 @@ class BranchesController extends Controller
         DB::beginTransaction();
         try {
             $branch_id = $request->get("branch_id");
-            $user_id   = $request->get("user_id");
 
             $branch = Branch::where('id', $branch_id)->first();
 
@@ -155,7 +154,8 @@ class BranchesController extends Controller
                 'phone'      => checkEmpty($branch_user, 'phone', ''),
                 'email'      => checkEmpty($branch, 'branch_email', ''),
                 'user_type'  => 'branch',
-                'token'      => $login_token_data['token']
+                'token'      => $login_token_data['token'],
+                'branch_id'  => $branch_id
             ];
             DB::commit();
             return prepare_response(200, true, 'Login successfully', $login_data);

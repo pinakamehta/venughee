@@ -48,13 +48,14 @@ class AuthController extends Controller
             ]);
 
             $login_data = [
-                'id'            => $login_user->id,
-                'first_name'    => checkEmpty($login_user, 'first_name', ''),
-                'last_name'     => checkEmpty($login_user, 'last_name', ''),
-                'phone'         => checkEmpty($login_user, 'phone', ''),
-                'email'         => $email,
-                'user_type'     => $user_type,
-                'token' => $login_token_data['token']
+                'id'         => $login_user->id,
+                'first_name' => checkEmpty($login_user, 'first_name', ''),
+                'last_name'  => checkEmpty($login_user, 'last_name', ''),
+                'phone'      => checkEmpty($login_user, 'phone', ''),
+                'email'      => $email,
+                'user_type'  => $user_type,
+                'token'      => $login_token_data['token'],
+                'branch_id'  => $login_user->branch_id
             ];
 
             return prepare_response(200, true, 'Login successfully', $login_data);
