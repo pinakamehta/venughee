@@ -263,7 +263,7 @@ class InvoiceRepository
 
     public function getInvoiceData($invoice_number)
     {
-        $invoice = $this->invoice->with(['customer'])->where('id', $invoice_number)->first();
+        $invoice = $this->invoice->with(['customer', 'branch'])->where('id', $invoice_number)->first();
 
         if (empty($invoice)) {
             return [];
@@ -282,7 +282,7 @@ class InvoiceRepository
             'grand_total'     => $invoice->grand_total,
             'terms_condition' => checkEmpty($invoice, 'terms_condition', ''),
             'customer'        => [
-                'id'            => !empty($invoice->customer) ? $invoice->customer->id : '',
+                'id'            => !empty($invoice->customer) ? $invoice->customer->id : 0,
                 'company_name'  => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'company_name', '') : '',
                 'customer_name' => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'customer_name', '') : '',
                 'phone'         => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'phone', '') : '',
@@ -294,6 +294,10 @@ class InvoiceRepository
                 'state'         => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'state', '') : '',
                 'country'       => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'country', '') : '',
                 'pin_code'      => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'pin_code', '') : '',
+            ],
+            'branch'          => [
+                'branch_id'   => !empty($invoice->branch) ? $invoice->branch->id : 0,
+                'branch_name' => !empty($invoice->branch) ? checkEmpty($invoice->branch, 'branch_name', '') : '',
             ]
         ];
     }
