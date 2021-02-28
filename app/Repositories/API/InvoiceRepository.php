@@ -119,8 +119,9 @@ class InvoiceRepository
                         'customer_name' => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'customer_name', '') : '',
                     ],
                     'branch'          => [
-                        'branch_id'   => !empty($invoice->branch) ? $invoice->branch->id : 0,
-                        'branch_name' => !empty($invoice->branch) ? checkEmpty($invoice->branch, 'branch_name', '') : '',
+                        'branch_id'      => !empty($invoice->branch) ? $invoice->branch->id : 0,
+                        'branch_name'    => !empty($invoice->branch) ? checkEmpty($invoice->branch, 'branch_name', '') : '',
+                        'branch_address' => !empty($invoice->branch) ? checkEmpty($invoice->branch, 'address', '') : '',
                     ]
                 ];
             }
@@ -296,8 +297,9 @@ class InvoiceRepository
                 'pin_code'      => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'pin_code', '') : '',
             ],
             'branch'          => [
-                'branch_id'   => !empty($invoice->branch) ? $invoice->branch->id : 0,
-                'branch_name' => !empty($invoice->branch) ? checkEmpty($invoice->branch, 'branch_name', '') : '',
+                'branch_id'      => !empty($invoice->branch) ? $invoice->branch->id : 0,
+                'branch_name'    => !empty($invoice->branch) ? checkEmpty($invoice->branch, 'branch_name', '') : '',
+                'branch_address' => !empty($invoice->branch) ? checkEmpty($invoice->branch, 'address', '') : '',
             ]
         ];
     }
