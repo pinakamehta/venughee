@@ -154,7 +154,7 @@ class InvoiceRepository
             $invoice->custom_invoice_number = $data['invoice_number'];
         }
 
-        if (!empty($data['items'])) {
+        if (!empty($data['items']) && $invoice->invoice_type == 'sales') {
             $invoice->items = $data['items'];
 
             $item_data = json_decode($data['items']);
