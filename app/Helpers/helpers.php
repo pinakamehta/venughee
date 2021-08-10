@@ -4,6 +4,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 if (!function_exists('prepare_response')) {
     function prepare_response($code, $status, $message, $data = [], $extra_data = [])
@@ -68,9 +69,14 @@ if (!function_exists('validate_admin_or_branch_and_session_token')) {
             ->first();
 
         if (!isset($admin_response)) {
+            Log::info("call admin response");
             return false;
         }
+        Log::info("token", [$token]);
+        Log::info("ad token", [$admin_response->token]);
+        Log::info("ad token", [$admin_response->token]);
         if (!in_array($token, [$admin_response->token, $admin_response->branch_token])) {
+            Log::info("call token");
             return false;
         }
 
