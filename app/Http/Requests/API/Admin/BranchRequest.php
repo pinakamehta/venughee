@@ -31,9 +31,8 @@ class BranchRequest extends FormRequest
             case 'store':
                 $rules = [
                     'branch_name'           => 'required',
-                    'gst_number'            => 'required',
-                    'branch_email'          => 'required|unique:branches,branch_email',
-                    'branch_contact_number' => 'required|unique:users,phone',
+                    'branch_email'          => 'unique:branches,branch_email',
+                    'branch_contact_number' => 'unique:users,phone',
                     'address'               => 'required'
                 ];
                 break;

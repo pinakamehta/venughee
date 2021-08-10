@@ -32,8 +32,7 @@ class CustomerRequest extends FormRequest
                 $rules = [
                     'company_name'  => 'required',
                     'customer_name' => 'required',
-                    'email'         => 'required|email',
-                    'phone'         => 'required',
+                    'email' => 'email'
                 ];
                 break;
             case 'customerInvoices':
