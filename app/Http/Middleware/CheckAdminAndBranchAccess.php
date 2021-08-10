@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class CheckAdminAndBranchAccess
@@ -17,6 +18,7 @@ class CheckAdminAndBranchAccess
      */
     public function handle($request, Closure $next)
     {
+        Log::info("calllllllllllllllllllllllllllllllllllllllllllllllllllll");
         $request->request->add(['token' => $request->header('Authorization')]);
         $data      = $request->all();
         $validator = Validator::make($data, ['user_id' => 'required|integer', 'token' => 'required']);
