@@ -67,7 +67,9 @@ if (!function_exists('validate_admin_or_branch_and_session_token')) {
         $admin          = new User();
         $admin_response = $admin->where('id', '=', $user_id)
             ->first();
-
+        echo '<pre>';
+        print_r($admin_response);
+        die;
         if (!isset($admin_response)) {
             echo "call admin response";
             die;
