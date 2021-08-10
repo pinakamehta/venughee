@@ -4,7 +4,6 @@ use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 if (!function_exists('prepare_response')) {
     function prepare_response($code, $status, $message, $data = [], $extra_data = [])
@@ -67,20 +66,11 @@ if (!function_exists('validate_admin_or_branch_and_session_token')) {
         $admin          = new User();
         $admin_response = $admin->where('id', '=', $user_id)
             ->first();
-        echo '<pre>';
-        print_r($admin_response);
-        die;
+
         if (!isset($admin_response)) {
-            echo "call admin response";
-            die;
             return false;
         }
-        Log::info("token", [$token]);
-        Log::info("ad token", [$admin_response->token]);
-        Log::info("ad token", [$admin_response->token]);
         if (!in_array($token, [$admin_response->token, $admin_response->branch_token])) {
-            echo "call token";
-            die;
             return false;
         }
 
@@ -91,9 +81,9 @@ if (!function_exists('validate_admin_or_branch_and_session_token')) {
             $session_token_expired_at = $admin_response->branch_token_expiry;
         }
 
-        if (empty($session_token_expired_at) || !is_token_active($session_token_expired_at)) {
-            return false;
-        }
+//        if (empty($session_token_expired_at) || !is_token_active($session_token_expired_at)) {
+//            return false;
+//        }
 
         return [
             'login_as_branch' => $login_as_branch
