@@ -81,9 +81,9 @@ if (!function_exists('validate_admin_or_branch_and_session_token')) {
             $session_token_expired_at = $admin_response->branch_token_expiry;
         }
 
-//        if (empty($session_token_expired_at) || !is_token_active($session_token_expired_at)) {
-//            return false;
-//        }
+        if (empty($session_token_expired_at) || !is_token_active($session_token_expired_at)) {
+            return false;
+        }
 
         return [
             'login_as_branch' => $login_as_branch
