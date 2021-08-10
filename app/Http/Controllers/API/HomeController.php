@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\StockTransaction;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
@@ -63,6 +64,7 @@ class HomeController extends Controller
             return prepare_response(200, true, 'Home screen data have been retrieved', $response_data);
         } catch (Exception $e) {
             report($e);
+            Log::info("calllllll", [$e->getMessage()]);
             return prepare_response(500, false, $e->getMessage());
         }
     }
