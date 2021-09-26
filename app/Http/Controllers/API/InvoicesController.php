@@ -67,10 +67,10 @@ class InvoicesController extends Controller
         }
     }
 
-    public function show($id)
+    public function show($invoice)
     {
         try {
-            $invoice = $this->invoice_repository->getInvoiceData($id);
+            $invoice = $this->invoice_repository->getInvoiceData($invoice);
 
             if (empty($invoice)) {
                 return prepare_response(200, false, 'Invoice number is invalid try again');
@@ -83,11 +83,11 @@ class InvoicesController extends Controller
         }
     }
 
-    public function update(InvoiceRequest $request, $id)
+    public function update(InvoiceRequest $request, $invoice)
     {
         DB::beginTransaction();
         try {
-            $this->invoice_repository->editInvoice($request->all(), $id);
+            $this->invoice_repository->editInvoice($request->all(), $invoice);
             DB::commit();
             return prepare_response(200, true, 'Invoice successfully saved');
         } catch (Exception $e) {
@@ -98,10 +98,10 @@ class InvoicesController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy($invoice)
     {
         try {
-            $this->invoice_repository->deleteInvoice($id);
+            $this->invoice_repository->deleteInvoice($invoice);
             return prepare_response(200, true, 'Invoice successfully deleted');
         } catch (Exception $e) {
             report($e);

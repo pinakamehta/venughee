@@ -315,11 +315,7 @@ class InvoiceRepository
                 'country'       => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'country', '') : '',
                 'pin_code'      => !empty($invoice->customer) ? checkEmpty($invoice->customer, 'pin_code', '') : '',
             ],
-            'branch'          => [
-                'branch_id'   => !empty($invoice->branch) ? $invoice->branch->id : 0,
-                'branch_name' => !empty($invoice->branch) ? checkEmpty($invoice->branch, 'branch_name', '') : '',
-                'address'     => !empty($invoice->branch) ? checkEmpty($invoice->branch, 'address', ($invoice->branchOwner) ? checkEmpty($invoice->branchOwner, 'address', '') : '') : '',
-            ]
+            'branch' => $branch
         ];
     }
 
