@@ -80,7 +80,7 @@ class CustomerRepository
             'pin_code'      => $data['pin_code'],
             'gst_number'    => $data['gst_number'],
             'gst_treatment' => $data['gst_treatment'],
-            'email'         => $data['email'],
+            'email'         => checkEmpty($data, 'email', ''),
             'added_by'      => $data['user_id']
         ]);
 
