@@ -265,7 +265,7 @@ class InvoiceRepository
 
     public function getInvoiceData($invoice_number)
     {
-        $invoice = $this->invoice->with(['customer', 'branch'])->where('id', $invoice_number)->first();
+        $invoice = $this->invoice->with(['customer', 'branch', 'branchOwner'])->where('id', $invoice_number)->first();
 
         if (empty($invoice)) {
             return [];
@@ -300,7 +300,7 @@ class InvoiceRepository
             'branch'          => [
                 'branch_id'   => !empty($invoice->branch) ? $invoice->branch->id : 0,
                 'branch_name' => !empty($invoice->branch) ? checkEmpty($invoice->branch, 'branch_name', '') : '',
-                'address'     => !empty($invoice->branch) ? checkEmpty($invoice->branch, 'address', '') : '',
+                'address'     => !empty($invoice->branch) ? checkEmpty($invoice->branch, 'address', ($invoice->branchOwner) ? checkEmpty($invoice->branchOwner, 'address', '') : '') : '',
             ]
         ];
     }

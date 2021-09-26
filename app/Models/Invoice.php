@@ -8,11 +8,18 @@ class Invoice extends Model
 {
     protected $guarded = ['id'];
 
-    public function customer() {
+    public function customer()
+    {
         return $this->hasOne(Customer::class, 'id', 'customer_id');
     }
 
-    public function branch() {
+    public function branch()
+    {
         return $this->hasOne(Branch::class, 'id', 'branch_id');
+    }
+
+    public function branchOwner()
+    {
+        return $this->hasOne(Branch::class, 'id', 'added_by');
     }
 }
