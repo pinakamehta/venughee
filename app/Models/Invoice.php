@@ -20,6 +20,6 @@ class Invoice extends Model
 
     public function branchOwner()
     {
-        return $this->hasOne(Branch::class, 'id', 'added_by');
+        return $this->hasOne(User::class, 'id', 'added_by');
     }
 }

@@ -271,6 +271,24 @@ class InvoiceRepository
             return [];
         }
 
+        $branch = [
+            'id'          => 0,
+            'branch_name' => '',
+            'address'     => ''
+        ];
+
+        if (!empty($invoice->branch)) {
+            $branch['branch_id']   = !empty($invoice->branch) ? $invoice->branch->id : 0;
+            $branch['branch_name'] = !empty($invoice->branch) ? checkEmpty($invoice->branch, 'branch_name', '') : '';
+            $branch['address']     = !empty($invoice->branch) ? checkEmpty($invoice->branch, 'address', '') : '';
+        }
+
+        if (!empty($invoice->branchOwner->branch)) {
+            $branch['branch_id']   = !empty($invoice->branchOwner->branch) ? $invoice->branchOwner->branch->id : 0;
+            $branch['branch_name'] = !empty($invoice->branchOwner->branch) ? checkEmpty($invoice->branchOwner->branch, 'branch_name', '') : '';
+            $branch['address']     = !empty($invoice->branchOwner->branch) ? checkEmpty($invoice->branchOwner->branch, 'address', '') : '';
+        }
+
         return [
             'id'              => $invoice->id,
             'invoice_number'  => !empty($invoice->custom_invoice_number) ? $invoice->custom_invoice_number : $invoice->invoice_number,
