@@ -69,7 +69,7 @@ class CustomerRepository
     public function createCustomer($data)
     {
         $customer = $this->customer->create([
-            'company_name'  => $data['company_name'],
+//            'company_name'  => $data['company_name'],
             'customer_name' => $data['customer_name'],
             'type'          => checkEmpty($data, 'type', 'customer'),
             'phone'         => $data['phone'],
