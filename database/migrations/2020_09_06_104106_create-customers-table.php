@@ -17,7 +17,7 @@ class CreateCustomersTable extends Migration
             $table->id();
             $table->string('customer_name', 50);
             $table->string('phone', 13);
-            $table->string('email', 50);
+            $table->string('email', 50)->nullable();
             $table->string('gst_treatment', 120)->nullable();
             $table->string('gst_number', 120)->nullable();
             $table->text('address')->nullable();
