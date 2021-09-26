@@ -23,7 +23,6 @@ class CustomerRepository
             ->where('added_by', $data['user_id'])
             ->get([
                 'id',
-                'company_name',
                 'customer_name',
                 'type',
                 'total_debit',
@@ -35,7 +34,6 @@ class CustomerRepository
                 'pin_code',
                 'gst_number',
                 'gst_treatment',
-                'email'
             ]);
 
         if (empty($customers)) {
