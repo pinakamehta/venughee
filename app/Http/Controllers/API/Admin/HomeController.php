@@ -61,7 +61,7 @@ class HomeController extends Controller
                 ];
             }
 
-            return prepare_response(200, true, 'Home screen data have been retrieved', $response_data);
+            return prepare_response(200, true, 'Admin Home screen data have been retrieved', $response_data);
         } catch (Exception $e) {
             report($e);
             return prepare_response(500, false, $e->getMessage());

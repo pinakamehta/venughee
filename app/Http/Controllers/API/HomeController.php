@@ -61,7 +61,7 @@ class HomeController extends Controller
                 'total_sell_items' => $total_sell_items
             ];
 
-            return prepare_response(200, true, 'Home screen data have been retrieved', $response_data);
+            return prepare_response(200, true, '123 Home screen data have been retrieved', $response_data);
         } catch (Exception $e) {
             report($e);
             Log::info("calllllll", [$e->getMessage()]);

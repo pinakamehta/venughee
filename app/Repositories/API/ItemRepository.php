@@ -24,6 +24,7 @@ class ItemRepository
         $items = $this->item->where('is_active', 1)
             ->where('item_for', $item_for)
             ->where('added_by', $data['user_id'])
+            ->orderBy('id', 'DESC')
             ->get([
                 'id',
                 'item_name',

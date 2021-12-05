@@ -27,6 +27,7 @@ class BranchRepository
 
         $branches = $this->branch->with(['branchUser'])
             ->orderBy("is_active", "DESC")
+            ->orderBy('id', 'DESC')
             ->limit($limit)
             ->offset($offset)
             ->get();

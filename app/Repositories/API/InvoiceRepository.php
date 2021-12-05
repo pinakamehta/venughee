@@ -158,8 +158,9 @@ class InvoiceRepository
             $invoice->items = $data['items'];
 
             $item_data = json_decode($data['items']);
+
             if ($invoice->invoice_type == 'sales') {
-                foreach ($item_data as $item) {
+                foreach ($item_data as $key => $item) {
                     if (!empty($item->quantity)) {
                         $itemObj = $this->item->where('id', $item->id)->first();
 
@@ -171,10 +172,11 @@ class InvoiceRepository
                             throw new Exception("You have not sufficient stock for " . strtoupper($item->item_name));
                         }
 
-                        if (empty($item->is_update) || $item->is_update == 0) {
-                            $itemObj->stock = $itemObj->stock - $item->quantity;
-                            $itemObj->save();
-
+                        if ((empty($item->is_update) || $item->is_update == 0)) {
+                            if (isset($item->is_new) && $item->is_new) {
+                                $itemObj->stock = $itemObj->stock - $item->quantity;
+                                $itemObj->save();
+                            }
                             $this->stock_transaction->create([
                                 'invoice_id'    => $invoice_id,
                                 'item_id'       => $item->id,
@@ -187,7 +189,7 @@ class InvoiceRepository
                                 ->first();
 
                             $stock_item_quantity = $stock_transaction->item_quantity;
-                            $difference          = $stock_item_quantity - $item->qantity;
+                            $difference          = $stock_item_quantity - $item->quantity;
 
                             $itemObj->stock = $itemObj->stock + $difference;
                             $itemObj->save();
@@ -195,9 +197,11 @@ class InvoiceRepository
                             $stock_transaction->item_quantity = $item->quantity;
                             $stock_transaction->save();
                         }
+                        $item_data[ $key ]->is_new = false;
                     }
                 }
             }
+            $invoice->items = json_encode($item_data);
         }
 
         if (!empty($data['terms_condition'])) {

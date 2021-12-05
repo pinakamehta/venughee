@@ -20,7 +20,13 @@ class CustomerRepository
     {
         $customers = $this->customer
             ->where('type', $data['type'])
-            ->where('added_by', $data['user_id'])
+            ->where('added_by', $data['user_id']);
+
+        if (!empty($data['customer_name'])) {
+            $customers = $customers->where('customer_name', 'like', '%' . $data['customer_name'] . '%');
+        }
+
+        $customers = $customers->orderBy('id', 'DESC')
             ->get([
                 'id',
                 'customer_name',
@@ -35,7 +41,6 @@ class CustomerRepository
                 'gst_number',
                 'gst_treatment',
             ]);
-
         if (empty($customers)) {
             throw new Exception('There is no customer available try to add new customer');
         }

@@ -63,10 +63,10 @@ class ItemsController extends Controller
     }
 
 
-    public function show($item)
+    public function show($id)
     {
         try {
-            $item_data = $this->item_repository->getInvoices($item);
+            $item_data = $this->item_repository->getInvoices($id);
 
             return prepare_response(200, true, 'Item invoices have been retrieve', $item_data);
         } catch (Exception $e) {
@@ -76,11 +76,11 @@ class ItemsController extends Controller
         }
     }
 
-    public function update(ItemRequest $request, $item)
+    public function update(ItemRequest $request, $id)
     {
         DB::beginTransaction();
         try {
-            $this->item_repository->updateItem($request->all(), $item);
+            $this->item_repository->updateItem($request->all(), $id);
             DB::commit();
             return prepare_response(200, true, 'Item has been updated');
         } catch (Exception $e) {
@@ -103,10 +103,10 @@ class ItemsController extends Controller
         }
     }
 
-    public function itemStock($item)
+    public function itemStock($id)
     {
         try {
-            $item_stock = $this->item_repository->itemStock($item);
+            $item_stock = $this->item_repository->itemStock($id);
 
             return prepare_response(200, true, 'Item stock has been retrieved', ['current_stock' => $item_stock]);
         } catch (Exception $e) {
