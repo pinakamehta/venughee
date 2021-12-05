@@ -32,10 +32,10 @@ class TransactionsController extends Controller
         }
     }
 
-    public function show($transaction_id)
+    public function show($transaction)
     {
         try {
-            $transactions = $this->transaction_repository->transactionDetail($transaction_id);
+            $transactions = $this->transaction_repository->transactionDetail($transaction);
 
             return prepare_response(200, true, 'All transactions have been retrieve', $transactions);
         } catch (Exception $e) {
@@ -59,12 +59,12 @@ class TransactionsController extends Controller
         }
     }
 
-    public function update(Request $request, $transaction_id)
+    public function update(Request $request, $transaction)
     {
         DB::beginTransaction();
         try {
             $data                   = $request->all();
-            $data['transaction_id'] = $transaction_id;
+            $data['transaction_id'] = $transaction;
             $this->transaction_repository->updateTransaction($data);
             DB::commit();
             return prepare_response(200, true, 'Transaction has been updated');
@@ -75,11 +75,11 @@ class TransactionsController extends Controller
         }
     }
 
-    public function destroy($transaction_id)
+    public function destroy($transaction)
     {
         DB::beginTransaction();
         try {
-            $this->transaction_repository->deleteTransaction($transaction_id);
+            $this->transaction_repository->deleteTransaction($transaction);
             DB::commit();
             return prepare_response(200, true, 'Transaction has been deleted');
         } catch (Exception $e) {

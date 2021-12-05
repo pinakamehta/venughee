@@ -63,24 +63,24 @@ class ItemsController extends Controller
     }
 
 
-    public function show($item_id)
+    public function show($item)
     {
         try {
-            $item_data = $this->item_repository->getInvoices($item_id);
+            $item_data = $this->item_repository->getInvoices($item);
 
             return prepare_response(200, true, 'Item invoices have been retrieve', $item_data);
         } catch (Exception $e) {
             report($e);
-            Log::channel('slack')->critical("item detail API", [$item_id]);
+            Log::channel('slack')->critical("item detail API", [$item]);
             return prepare_response(500, false, $e->getMessage());
         }
     }
 
-    public function update(ItemRequest $request, $item_id)
+    public function update(ItemRequest $request, $item)
     {
         DB::beginTransaction();
         try {
-            $this->item_repository->updateItem($request->all(), $item_id);
+            $this->item_repository->updateItem($request->all(), $item);
             DB::commit();
             return prepare_response(200, true, 'Item has been updated');
         } catch (Exception $e) {
@@ -91,10 +91,10 @@ class ItemsController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy($item)
     {
         try {
-            $this->item_repository->deleteItem($id);
+            $this->item_repository->deleteItem($item);
 
             return prepare_response(200, true, 'Item has been deleted');
         } catch (Exception $e) {
@@ -103,10 +103,10 @@ class ItemsController extends Controller
         }
     }
 
-    public function itemStock($id)
+    public function itemStock($item)
     {
         try {
-            $item_stock = $this->item_repository->itemStock($id);
+            $item_stock = $this->item_repository->itemStock($item);
 
             return prepare_response(200, true, 'Item stock has been retrieved', ['current_stock' => $item_stock]);
         } catch (Exception $e) {

@@ -25,9 +25,6 @@ class BankRepository
         $bank_data = [];
 
         $cash_transactions = $this->transaction->where('bank_id', 0)
-            ->where('expense_type_id', 0)
-            ->where('credit', '>', 0)
-            ->where('debit', 0)
             ->where('created_by', $data['user_id'])
             ->select(DB::raw(DB::raw("(sum(credit) - sum(debit)) as total")))
             ->first();
@@ -50,7 +47,7 @@ class BankRepository
                     'account_code'   => $bank->account_code,
                     'account_number' => $bank->account_number,
                     'bank_name'      => $bank->bank_name,
-                    'description'    => $bank->description,
+                    'description'    => checkEmpty($bank, 'description', ''),
                     'balance'        => bank_balance($bank->id)
                 ];
             }

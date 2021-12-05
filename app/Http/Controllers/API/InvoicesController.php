@@ -34,10 +34,10 @@ class InvoicesController extends Controller
         }
     }
 
-    public function validateInvoiceId($invoice_id)
+    public function validateInvoiceId($invoice)
     {
         try {
-            $response = $this->invoice_repository->validateInvoiceNumber($invoice_id);
+            $response = $this->invoice_repository->validateInvoiceNumber($invoice);
 
             if (!$response) {
                 return prepare_response(200, false, 'This invoice number has been taken, Please try another');

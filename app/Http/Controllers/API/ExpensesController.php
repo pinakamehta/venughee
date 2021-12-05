@@ -40,10 +40,10 @@ class ExpensesController extends Controller
         }
     }
 
-    public function show($id)
+    public function show($expense)
     {
         try {
-            $transaction = $this->expense_repository->expenseDetail($id);
+            $transaction = $this->expense_repository->expenseDetail($expense);
 
             return prepare_response(200, true, 'Expense details have been retrieve successfully', $transaction);
         } catch (Exception $e) {
@@ -78,14 +78,14 @@ class ExpensesController extends Controller
      * Update the specified resource in storage.
      *
      * @param ExpenseRequest $request
-     * @param int $id
+     * @param int $expense
      * @return JsonResponse
      */
-    public function update(ExpenseRequest $request, $id)
+    public function update(ExpenseRequest $request, $expense)
     {
         DB::beginTransaction();
         try {
-            $this->expense_repository->updateExpense($request->all(), $id);
+            $this->expense_repository->updateExpense($request->all(), $expense);
             DB::commit();
             return prepare_response(200, true, 'Expense has been updated');
         } catch (Exception $e) {
@@ -99,14 +99,14 @@ class ExpensesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param int $expense
      * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy($expense)
     {
         DB::beginTransaction();
         try {
-            $this->expense_repository->deleteExpense($id);
+            $this->expense_repository->deleteExpense($expense);
             DB::commit();
             return prepare_response(200, true, 'Expense has been deleted');
         } catch (Exception $e) {
